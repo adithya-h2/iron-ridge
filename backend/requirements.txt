@@ -1,0 +1,50 @@
+# ===========================================================
+# Iron Ridge Intelligent Sales Workflow — Backend Dependencies
+# Python 3.12 | FastAPI | SQLAlchemy 2.x | Pydantic v2
+# ===========================================================
+
+# --- Web Framework ---
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+
+# --- SQLAlchemy (async) ---
+sqlalchemy==2.0.36
+asyncpg==0.30.0          # Async PostgreSQL driver (used by SQLAlchemy async engine)
+greenlet==3.1.1          # Required by SQLAlchemy async internals
+
+# --- Alembic (migrations) ---
+alembic==1.14.0
+
+# --- Pydantic v2 ---
+pydantic==2.10.3
+pydantic-settings==2.7.0  # Pydantic Settings for .env loading
+
+# --- Authentication ---
+python-jose[cryptography]==3.3.0   # JWT encode / decode
+passlib[bcrypt]==1.7.4             # Password hashing
+python-multipart==0.0.20           # Required for OAuth2 form parsing
+
+# --- HTTP Client (agents call external LLMs / n8n) ---
+httpx==0.28.1
+
+# --- AI Providers ---
+openai==1.58.1
+anthropic==0.40.0
+
+# --- Slack (human-in-the-loop notifications ONLY) ---
+slack-sdk==3.34.0
+
+# --- Redis (optional caching / rate limiting layer) ---
+redis==5.2.1
+
+# --- Utilities ---
+python-dotenv==1.0.1
+tenacity==9.0.0          # Retry logic for LLM and external API calls
+
+# --- Logging ---
+structlog==24.4.0        # Structured JSON logging
+
+# --- Testing ---
+pytest==8.3.4
+pytest-asyncio==0.25.0
+httpx==0.28.1            # Also used as async test client

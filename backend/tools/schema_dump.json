@@ -1,0 +1,1943 @@
+{
+  "tables": {
+    "agent_memory": {
+      "table_name": "agent_memory",
+      "primary_keys": [
+        "memory_id"
+      ],
+      "unique_columns": [],
+      "columns": [
+        {
+          "column_name": "memory_id",
+          "ordinal_position": 1,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": false,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "deal_id",
+          "ordinal_position": 2,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "agent_name",
+          "ordinal_position": 3,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "context",
+          "ordinal_position": 4,
+          "data_type": "text",
+          "udt_name": "text",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "summary",
+          "ordinal_position": 5,
+          "data_type": "text",
+          "udt_name": "text",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "updated_at",
+          "ordinal_position": 6,
+          "data_type": "timestamp without time zone",
+          "udt_name": "timestamp",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        }
+      ]
+    },
+    "approvals": {
+      "table_name": "approvals",
+      "primary_keys": [
+        "approval_id"
+      ],
+      "unique_columns": [],
+      "columns": [
+        {
+          "column_name": "approval_id",
+          "ordinal_position": 1,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": false,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "quotation_id",
+          "ordinal_position": 2,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "approved_by",
+          "ordinal_position": 3,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "decision",
+          "ordinal_position": 4,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "remarks",
+          "ordinal_position": 5,
+          "data_type": "text",
+          "udt_name": "text",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "approved_at",
+          "ordinal_position": 6,
+          "data_type": "timestamp without time zone",
+          "udt_name": "timestamp",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        }
+      ]
+    },
+    "audit_logs": {
+      "table_name": "audit_logs",
+      "primary_keys": [
+        "audit_id"
+      ],
+      "unique_columns": [],
+      "columns": [
+        {
+          "column_name": "audit_id",
+          "ordinal_position": 1,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": false,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "deal_id",
+          "ordinal_position": 2,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "agent_name",
+          "ordinal_position": 3,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "action",
+          "ordinal_position": 4,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "previous_status",
+          "ordinal_position": 5,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "new_status",
+          "ordinal_position": 6,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "reason",
+          "ordinal_position": 7,
+          "data_type": "text",
+          "udt_name": "text",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "created_at",
+          "ordinal_position": 8,
+          "data_type": "timestamp without time zone",
+          "udt_name": "timestamp",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        }
+      ]
+    },
+    "bom": {
+      "table_name": "bom",
+      "primary_keys": [
+        "bom_id"
+      ],
+      "unique_columns": [],
+      "columns": [
+        {
+          "column_name": "bom_id",
+          "ordinal_position": 1,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": false,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "deal_id",
+          "ordinal_position": 2,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "vehicle_id",
+          "ordinal_position": 3,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "total_cost",
+          "ordinal_position": 4,
+          "data_type": "numeric",
+          "udt_name": "numeric",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "margin",
+          "ordinal_position": 5,
+          "data_type": "numeric",
+          "udt_name": "numeric",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "generated_at",
+          "ordinal_position": 6,
+          "data_type": "timestamp without time zone",
+          "udt_name": "timestamp",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        }
+      ]
+    },
+    "bom_items": {
+      "table_name": "bom_items",
+      "primary_keys": [
+        "item_id"
+      ],
+      "unique_columns": [],
+      "columns": [
+        {
+          "column_name": "item_id",
+          "ordinal_position": 1,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": false,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "bom_id",
+          "ordinal_position": 2,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "component_name",
+          "ordinal_position": 3,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "component_type",
+          "ordinal_position": 4,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "quantity",
+          "ordinal_position": 5,
+          "data_type": "integer",
+          "udt_name": "int4",
+          "max_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "unit_price",
+          "ordinal_position": 6,
+          "data_type": "numeric",
+          "udt_name": "numeric",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "subtotal",
+          "ordinal_position": 7,
+          "data_type": "numeric",
+          "udt_name": "numeric",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        }
+      ]
+    },
+    "customers": {
+      "table_name": "customers",
+      "primary_keys": [
+        "customer_id"
+      ],
+      "unique_columns": [],
+      "columns": [
+        {
+          "column_name": "customer_id",
+          "ordinal_position": 1,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": false,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "company_name",
+          "ordinal_position": 2,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "contact_person",
+          "ordinal_position": 3,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "email",
+          "ordinal_position": 4,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "phone",
+          "ordinal_position": 5,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "website",
+          "ordinal_position": 6,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "industry",
+          "ordinal_position": 7,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "ownership_type",
+          "ordinal_position": 8,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "address",
+          "ordinal_position": 9,
+          "data_type": "text",
+          "udt_name": "text",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "city",
+          "ordinal_position": 10,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "state",
+          "ordinal_position": 11,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "country",
+          "ordinal_position": 12,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "created_at",
+          "ordinal_position": 13,
+          "data_type": "timestamp without time zone",
+          "udt_name": "timestamp",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "updated_at",
+          "ordinal_position": 14,
+          "data_type": "timestamp without time zone",
+          "udt_name": "timestamp",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        }
+      ]
+    },
+    "deals": {
+      "table_name": "deals",
+      "primary_keys": [
+        "deal_id"
+      ],
+      "unique_columns": [],
+      "columns": [
+        {
+          "column_name": "deal_id",
+          "ordinal_position": 1,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": false,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "customer_id",
+          "ordinal_position": 2,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "status",
+          "ordinal_position": 3,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "priority",
+          "ordinal_position": 4,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "current_agent",
+          "ordinal_position": 5,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "lead_score",
+          "ordinal_position": 6,
+          "data_type": "integer",
+          "udt_name": "int4",
+          "max_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "approval_status",
+          "ordinal_position": 7,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "created_at",
+          "ordinal_position": 8,
+          "data_type": "timestamp without time zone",
+          "udt_name": "timestamp",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "updated_at",
+          "ordinal_position": 9,
+          "data_type": "timestamp without time zone",
+          "udt_name": "timestamp",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        }
+      ]
+    },
+    "delivery_plan": {
+      "table_name": "delivery_plan",
+      "primary_keys": [
+        "delivery_id"
+      ],
+      "unique_columns": [],
+      "columns": [
+        {
+          "column_name": "delivery_id",
+          "ordinal_position": 1,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": false,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "order_id",
+          "ordinal_position": 2,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "delivery_month",
+          "ordinal_position": 3,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "planned_quantity",
+          "ordinal_position": 4,
+          "data_type": "integer",
+          "udt_name": "int4",
+          "max_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "planned_date",
+          "ordinal_position": 5,
+          "data_type": "date",
+          "udt_name": "date",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "delivery_status",
+          "ordinal_position": 6,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        }
+      ]
+    },
+    "discount_master": {
+      "table_name": "discount_master",
+      "primary_keys": [
+        "discount_id"
+      ],
+      "unique_columns": [],
+      "columns": [
+        {
+          "column_name": "discount_id",
+          "ordinal_position": 1,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": false,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "minimum_quantity",
+          "ordinal_position": 2,
+          "data_type": "integer",
+          "udt_name": "int4",
+          "max_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "maximum_quantity",
+          "ordinal_position": 3,
+          "data_type": "integer",
+          "udt_name": "int4",
+          "max_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "discount_percentage",
+          "ordinal_position": 4,
+          "data_type": "numeric",
+          "udt_name": "numeric",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "approval_required",
+          "ordinal_position": 5,
+          "data_type": "boolean",
+          "udt_name": "bool",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        }
+      ]
+    },
+    "lead_validation": {
+      "table_name": "lead_validation",
+      "primary_keys": [
+        "validation_id"
+      ],
+      "unique_columns": [],
+      "columns": [
+        {
+          "column_name": "validation_id",
+          "ordinal_position": 1,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": false,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "deal_id",
+          "ordinal_position": 2,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "website_verified",
+          "ordinal_position": 3,
+          "data_type": "boolean",
+          "udt_name": "bool",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "phone_verified",
+          "ordinal_position": 4,
+          "data_type": "boolean",
+          "udt_name": "bool",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "email_verified",
+          "ordinal_position": 5,
+          "data_type": "boolean",
+          "udt_name": "bool",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "linkedin_verified",
+          "ordinal_position": 6,
+          "data_type": "boolean",
+          "udt_name": "bool",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "company_verified",
+          "ordinal_position": 7,
+          "data_type": "boolean",
+          "udt_name": "bool",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "hospital_beds",
+          "ordinal_position": 8,
+          "data_type": "integer",
+          "udt_name": "int4",
+          "max_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "annual_revenue",
+          "ordinal_position": 9,
+          "data_type": "numeric",
+          "udt_name": "numeric",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "employee_count",
+          "ordinal_position": 10,
+          "data_type": "integer",
+          "udt_name": "int4",
+          "max_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "confidence_score",
+          "ordinal_position": 11,
+          "data_type": "numeric",
+          "udt_name": "numeric",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "lead_score",
+          "ordinal_position": 12,
+          "data_type": "integer",
+          "udt_name": "int4",
+          "max_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "validation_summary",
+          "ordinal_position": 13,
+          "data_type": "text",
+          "udt_name": "text",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "validated_at",
+          "ordinal_position": 14,
+          "data_type": "timestamp without time zone",
+          "udt_name": "timestamp",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        }
+      ]
+    },
+    "orders": {
+      "table_name": "orders",
+      "primary_keys": [
+        "order_id"
+      ],
+      "unique_columns": [],
+      "columns": [
+        {
+          "column_name": "order_id",
+          "ordinal_position": 1,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": false,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "deal_id",
+          "ordinal_position": 2,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "quotation_id",
+          "ordinal_position": 3,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "erp_reference",
+          "ordinal_position": 4,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "order_status",
+          "ordinal_position": 5,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "production_start",
+          "ordinal_position": 6,
+          "data_type": "date",
+          "udt_name": "date",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "production_end",
+          "ordinal_position": 7,
+          "data_type": "date",
+          "udt_name": "date",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "created_at",
+          "ordinal_position": 8,
+          "data_type": "timestamp without time zone",
+          "udt_name": "timestamp",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        }
+      ]
+    },
+    "price_master": {
+      "table_name": "price_master",
+      "primary_keys": [
+        "price_id"
+      ],
+      "unique_columns": [],
+      "columns": [
+        {
+          "column_name": "price_id",
+          "ordinal_position": 1,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": false,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "component_name",
+          "ordinal_position": 2,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "component_type",
+          "ordinal_position": 3,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "unit_price",
+          "ordinal_position": 4,
+          "data_type": "numeric",
+          "udt_name": "numeric",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "currency",
+          "ordinal_position": 5,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "effective_date",
+          "ordinal_position": 6,
+          "data_type": "date",
+          "udt_name": "date",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        }
+      ]
+    },
+    "quotation_items": {
+      "table_name": "quotation_items",
+      "primary_keys": [
+        "quotation_item_id"
+      ],
+      "unique_columns": [],
+      "columns": [
+        {
+          "column_name": "quotation_item_id",
+          "ordinal_position": 1,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": false,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "quotation_id",
+          "ordinal_position": 2,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "component_name",
+          "ordinal_position": 3,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "quantity",
+          "ordinal_position": 4,
+          "data_type": "integer",
+          "udt_name": "int4",
+          "max_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "unit_price",
+          "ordinal_position": 5,
+          "data_type": "numeric",
+          "udt_name": "numeric",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "discount",
+          "ordinal_position": 6,
+          "data_type": "numeric",
+          "udt_name": "numeric",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "total",
+          "ordinal_position": 7,
+          "data_type": "numeric",
+          "udt_name": "numeric",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        }
+      ]
+    },
+    "quotations": {
+      "table_name": "quotations",
+      "primary_keys": [
+        "quotation_id"
+      ],
+      "unique_columns": [],
+      "columns": [
+        {
+          "column_name": "quotation_id",
+          "ordinal_position": 1,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": false,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "deal_id",
+          "ordinal_position": 2,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "quotation_version",
+          "ordinal_position": 3,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "subtotal",
+          "ordinal_position": 4,
+          "data_type": "numeric",
+          "udt_name": "numeric",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "discount",
+          "ordinal_position": 5,
+          "data_type": "numeric",
+          "udt_name": "numeric",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "tax",
+          "ordinal_position": 6,
+          "data_type": "numeric",
+          "udt_name": "numeric",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "grand_total",
+          "ordinal_position": 7,
+          "data_type": "numeric",
+          "udt_name": "numeric",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "quotation_status",
+          "ordinal_position": 8,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "created_at",
+          "ordinal_position": 9,
+          "data_type": "timestamp without time zone",
+          "udt_name": "timestamp",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        }
+      ]
+    },
+    "requirements": {
+      "table_name": "requirements",
+      "primary_keys": [
+        "requirement_id"
+      ],
+      "unique_columns": [],
+      "columns": [
+        {
+          "column_name": "requirement_id",
+          "ordinal_position": 1,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": false,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "deal_id",
+          "ordinal_position": 2,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "vehicle_model",
+          "ordinal_position": 3,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "vehicle_type",
+          "ordinal_position": 4,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "quantity",
+          "ordinal_position": 5,
+          "data_type": "integer",
+          "udt_name": "int4",
+          "max_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "delivery_start",
+          "ordinal_position": 6,
+          "data_type": "date",
+          "udt_name": "date",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "delivery_end",
+          "ordinal_position": 7,
+          "data_type": "date",
+          "udt_name": "date",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "monthly_delivery",
+          "ordinal_position": 8,
+          "data_type": "integer",
+          "udt_name": "int4",
+          "max_length": null,
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "budget",
+          "ordinal_position": 9,
+          "data_type": "numeric",
+          "udt_name": "numeric",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "special_requirements",
+          "ordinal_position": 10,
+          "data_type": "text",
+          "udt_name": "text",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "created_at",
+          "ordinal_position": 11,
+          "data_type": "timestamp without time zone",
+          "udt_name": "timestamp",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        }
+      ]
+    },
+    "vehicle_master": {
+      "table_name": "vehicle_master",
+      "primary_keys": [
+        "vehicle_id"
+      ],
+      "unique_columns": [],
+      "columns": [
+        {
+          "column_name": "vehicle_id",
+          "ordinal_position": 1,
+          "data_type": "uuid",
+          "udt_name": "uuid",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": false,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "vehicle_code",
+          "ordinal_position": 2,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "vehicle_name",
+          "ordinal_position": 3,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "category",
+          "ordinal_position": 4,
+          "data_type": "character varying",
+          "udt_name": "varchar",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "base_price",
+          "ordinal_position": 5,
+          "data_type": "numeric",
+          "udt_name": "numeric",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        },
+        {
+          "column_name": "description",
+          "ordinal_position": 6,
+          "data_type": "text",
+          "udt_name": "text",
+          "max_length": null,
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "is_nullable": true,
+          "column_default": null,
+          "is_identity": false
+        }
+      ]
+    }
+  },
+  "foreign_keys": [
+    {
+      "from_table": "agent_memory",
+      "from_column": "deal_id",
+      "to_table": "deals",
+      "to_column": "deal_id",
+      "constraint_name": "agent_memory_deal_id_fkey",
+      "on_delete": "NO ACTION",
+      "on_update": "NO ACTION"
+    },
+    {
+      "from_table": "approvals",
+      "from_column": "quotation_id",
+      "to_table": "quotations",
+      "to_column": "quotation_id",
+      "constraint_name": "approvals_quotation_id_fkey",
+      "on_delete": "NO ACTION",
+      "on_update": "NO ACTION"
+    },
+    {
+      "from_table": "audit_logs",
+      "from_column": "deal_id",
+      "to_table": "deals",
+      "to_column": "deal_id",
+      "constraint_name": "audit_logs_deal_id_fkey",
+      "on_delete": "NO ACTION",
+      "on_update": "NO ACTION"
+    },
+    {
+      "from_table": "bom",
+      "from_column": "deal_id",
+      "to_table": "deals",
+      "to_column": "deal_id",
+      "constraint_name": "bom_deal_id_fkey",
+      "on_delete": "NO ACTION",
+      "on_update": "NO ACTION"
+    },
+    {
+      "from_table": "bom",
+      "from_column": "vehicle_id",
+      "to_table": "vehicle_master",
+      "to_column": "vehicle_id",
+      "constraint_name": "bom_vehicle_id_fkey",
+      "on_delete": "NO ACTION",
+      "on_update": "NO ACTION"
+    },
+    {
+      "from_table": "bom_items",
+      "from_column": "bom_id",
+      "to_table": "bom",
+      "to_column": "bom_id",
+      "constraint_name": "bom_items_bom_id_fkey",
+      "on_delete": "NO ACTION",
+      "on_update": "NO ACTION"
+    },
+    {
+      "from_table": "deals",
+      "from_column": "customer_id",
+      "to_table": "customers",
+      "to_column": "customer_id",
+      "constraint_name": "deals_customer_id_fkey",
+      "on_delete": "NO ACTION",
+      "on_update": "NO ACTION"
+    },
+    {
+      "from_table": "delivery_plan",
+      "from_column": "order_id",
+      "to_table": "orders",
+      "to_column": "order_id",
+      "constraint_name": "delivery_plan_order_id_fkey",
+      "on_delete": "NO ACTION",
+      "on_update": "NO ACTION"
+    },
+    {
+      "from_table": "lead_validation",
+      "from_column": "deal_id",
+      "to_table": "deals",
+      "to_column": "deal_id",
+      "constraint_name": "lead_validation_deal_id_fkey",
+      "on_delete": "NO ACTION",
+      "on_update": "NO ACTION"
+    },
+    {
+      "from_table": "orders",
+      "from_column": "deal_id",
+      "to_table": "deals",
+      "to_column": "deal_id",
+      "constraint_name": "orders_deal_id_fkey",
+      "on_delete": "NO ACTION",
+      "on_update": "NO ACTION"
+    },
+    {
+      "from_table": "orders",
+      "from_column": "quotation_id",
+      "to_table": "quotations",
+      "to_column": "quotation_id",
+      "constraint_name": "orders_quotation_id_fkey",
+      "on_delete": "NO ACTION",
+      "on_update": "NO ACTION"
+    },
+    {
+      "from_table": "quotation_items",
+      "from_column": "quotation_id",
+      "to_table": "quotations",
+      "to_column": "quotation_id",
+      "constraint_name": "quotation_items_quotation_id_fkey",
+      "on_delete": "NO ACTION",
+      "on_update": "NO ACTION"
+    },
+    {
+      "from_table": "quotations",
+      "from_column": "deal_id",
+      "to_table": "deals",
+      "to_column": "deal_id",
+      "constraint_name": "quotations_deal_id_fkey",
+      "on_delete": "NO ACTION",
+      "on_update": "NO ACTION"
+    },
+    {
+      "from_table": "requirements",
+      "from_column": "deal_id",
+      "to_table": "deals",
+      "to_column": "deal_id",
+      "constraint_name": "requirements_deal_id_fkey",
+      "on_delete": "NO ACTION",
+      "on_update": "NO ACTION"
+    }
+  ],
+  "indexes": [
+    {
+      "table": "agent_memory",
+      "index": "agent_memory_pkey",
+      "unique": true,
+      "columns": [
+        "memory_id"
+      ]
+    },
+    {
+      "table": "approvals",
+      "index": "approvals_pkey",
+      "unique": true,
+      "columns": [
+        "approval_id"
+      ]
+    },
+    {
+      "table": "audit_logs",
+      "index": "audit_logs_pkey",
+      "unique": true,
+      "columns": [
+        "audit_id"
+      ]
+    },
+    {
+      "table": "bom",
+      "index": "bom_pkey",
+      "unique": true,
+      "columns": [
+        "bom_id"
+      ]
+    },
+    {
+      "table": "bom_items",
+      "index": "bom_items_pkey",
+      "unique": true,
+      "columns": [
+        "item_id"
+      ]
+    },
+    {
+      "table": "customers",
+      "index": "customers_pkey",
+      "unique": true,
+      "columns": [
+        "customer_id"
+      ]
+    },
+    {
+      "table": "deals",
+      "index": "deals_pkey",
+      "unique": true,
+      "columns": [
+        "deal_id"
+      ]
+    },
+    {
+      "table": "delivery_plan",
+      "index": "delivery_plan_pkey",
+      "unique": true,
+      "columns": [
+        "delivery_id"
+      ]
+    },
+    {
+      "table": "discount_master",
+      "index": "discount_master_pkey",
+      "unique": true,
+      "columns": [
+        "discount_id"
+      ]
+    },
+    {
+      "table": "lead_validation",
+      "index": "lead_validation_pkey",
+      "unique": true,
+      "columns": [
+        "validation_id"
+      ]
+    },
+    {
+      "table": "orders",
+      "index": "orders_pkey",
+      "unique": true,
+      "columns": [
+        "order_id"
+      ]
+    },
+    {
+      "table": "price_master",
+      "index": "price_master_pkey",
+      "unique": true,
+      "columns": [
+        "price_id"
+      ]
+    },
+    {
+      "table": "quotation_items",
+      "index": "quotation_items_pkey",
+      "unique": true,
+      "columns": [
+        "quotation_item_id"
+      ]
+    },
+    {
+      "table": "quotations",
+      "index": "quotations_pkey",
+      "unique": true,
+      "columns": [
+        "quotation_id"
+      ]
+    },
+    {
+      "table": "requirements",
+      "index": "requirements_pkey",
+      "unique": true,
+      "columns": [
+        "requirement_id"
+      ]
+    },
+    {
+      "table": "vehicle_master",
+      "index": "vehicle_master_pkey",
+      "unique": true,
+      "columns": [
+        "vehicle_id"
+      ]
+    }
+  ],
+  "enums": {}
+}
