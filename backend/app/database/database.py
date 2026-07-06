@@ -74,6 +74,9 @@ def create_engine() -> AsyncEngine:
         pool_timeout=settings.db_pool_timeout, # Wait N seconds for a free connection
         pool_recycle=settings.db_pool_recycle, # Recycle connections to avoid TCP timeouts
         pool_pre_ping=True,                    # Verify connection alive before using it
+	connect_args={
+		"statement_cache_size": 0,
+	},
         # pool_pre_ping prevents "server closed connection unexpectedly" errors
         # that happen after Supabase pauses an idle connection.
     )
