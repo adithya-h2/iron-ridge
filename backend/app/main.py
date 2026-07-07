@@ -26,9 +26,26 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 
+from app.api.exception_handlers import register_exception_handlers
+from app.api.middleware.request_logging import RequestLoggingMiddleware
+from app.api.routes import (
+    agents,
+    approvals,
+    audit,
+    auth,
+    customers,
+    deals,
+    orders,
+    quotations,
+    requirements,
+    webhooks,
+)
 from app.core.config import settings
 from app.core.logging import configure_logging
 from app.database.database import engine
+from app.database.session import AsyncSessionFactory
+from app.repositories.user import UserRepository
+from app.services.auth import AuthService
 
 # Configure structured JSON logging BEFORE anything else logs
 configure_logging()
@@ -73,7 +90,17 @@ async def lifespan(app: FastAPI):
             extra={"error": str(exc)},
             exc_info=True,
         )
-        raise  # Crash intentionally — a backend without a DB is useless
+        raise
+
+    # Bootstrap admin user if not exists
+    try:
+        async with AsyncSessionFactory() as session:
+            auth_service = AuthService(UserRepository(session))
+            await auth_service.ensure_admin_exists(settings.admin_email, settings.admin_password)
+            await session.commit()
+        logger.info("Admin user bootstrap complete.")
+    except Exception as exc:
+        logger.warning("Admin bootstrap skipped", extra={"error": str(exc)})
 
     yield  # Application runs here
 
@@ -112,6 +139,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(RequestLoggingMiddleware)
+
+register_exception_handlers(app)
 
 # ---------------------------------------------------------------------------
 # Health Check Endpoint
@@ -190,18 +220,16 @@ async def health_check() -> JSONResponse:
 
 
 # ---------------------------------------------------------------------------
-# API Routers — uncommented as each step is implemented
+# API Routers
 # ---------------------------------------------------------------------------
 
-# Step 1: Health only (above)
-# Step 2+: Uncomment as routes are implemented
-
-# from app.api.routes import auth, customers, deals, agents, quotations, orders, approvals, webhooks
-# app.include_router(auth.router,        prefix="/auth",       tags=["Authentication"])
-# app.include_router(customers.router,   prefix="/customers",  tags=["Customers"])
-# app.include_router(deals.router,       prefix="/deals",      tags=["Deals"])
-# app.include_router(agents.router,      prefix="/agents",     tags=["AI Agents"])
-# app.include_router(quotations.router,  prefix="/quotations", tags=["Quotations"])
-# app.include_router(orders.router,      prefix="/orders",     tags=["Orders"])
-# app.include_router(approvals.router,   prefix="/approvals",  tags=["Approvals"])
-# app.include_router(webhooks.router,    prefix="/webhooks",   tags=["n8n Webhooks"])
+app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+app.include_router(customers.router, prefix="/customers", tags=["Customers"])
+app.include_router(deals.router, prefix="/deals", tags=["Deals"])
+app.include_router(requirements.router, prefix="/requirements", tags=["Requirements"])
+app.include_router(quotations.router, prefix="/quotations", tags=["Quotations"])
+app.include_router(approvals.router, prefix="/approvals", tags=["Approvals"])
+app.include_router(orders.router, prefix="/orders", tags=["Orders"])
+app.include_router(audit.router, prefix="/audit", tags=["Audit"])
+app.include_router(agents.router, prefix="/agents", tags=["AI Agents"])
+app.include_router(webhooks.router, prefix="/webhooks", tags=["Webhooks"])

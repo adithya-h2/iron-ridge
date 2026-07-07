@@ -102,7 +102,15 @@ class Settings(BaseSettings):
     # Slack (human-in-the-loop notifications ONLY)
     # -----------------------------------------------------------------------
     slack_bot_token: str = ""
+    slack_signing_secret: str = ""
     slack_approval_channel: str = "#sales-approvals"
+
+    # -----------------------------------------------------------------------
+    # Agent / Admin bootstrap
+    # -----------------------------------------------------------------------
+    agent_api_key: str = ""
+    admin_email: str = "admin@ironridge.com"
+    admin_password: str = "changeme"
 
     # -----------------------------------------------------------------------
     # Redis (optional caching layer)

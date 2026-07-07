@@ -133,4 +133,85 @@ Slack notification → Victor (approval gate only)
 
 ---
 
+## API Endpoints
+
+| Tag | Prefix | Description |
+|-----|--------|-------------|
+| System | `/health` | Health check with DB ping |
+| Authentication | `/auth` | Login, register, `/auth/me` |
+| Customers | `/customers` | CRUD + search |
+| Deals | `/deals` | CRUD + `/deals/{id}/transition` |
+| Requirements | `/requirements` | CRUD scoped to deals |
+| Quotations | `/quotations` | CRUD + `/quotations/generate/{deal_id}` |
+| Approvals | `/approvals` | CRUD + decide + request |
+| Orders | `/orders` | CRUD |
+| Audit | `/audit` | Read-only audit trail by deal |
+| AI Agents | `/agents` | `POST /agents/{marty\|lisa\|neil\|paul\|sally\|adam}` |
+| Webhooks | `/webhooks` | n8n lead entry + Slack callbacks |
+
+Interactive docs: `http://localhost:8000/docs`
+
+### Agent Endpoints (n8n compatible)
+
+Agent routes accept **form-encoded POST** bodies and return flat JSON for n8n `$json.*` expressions.
+
+| Endpoint | Key response fields |
+|----------|---------------------|
+| `POST /agents/marty` | `deal_id`, `lead_score`, `status`, `current_agent` |
+| `POST /agents/lisa` | `qualified`, `status`, `current_agent`, `lead_score` |
+| `POST /agents/neil` | `status`, `requirements`, `current_agent` |
+| `POST /agents/paul` | `quotation_id`, `quotation_generated`, `approval_status` |
+| `POST /agents/sally` | `order_id`, `status`, `current_agent` |
+| `POST /agents/adam` | `status`, `current_agent` |
+
+---
+
+## Setup
+
+```bash
+cd backend
+cp .env.example .env          # Fill in DATABASE_URL, SECRET_KEY, etc.
+pip install -r requirements.txt
+alembic upgrade head          # Creates users table
+uvicorn app.main:app --reload
+```
+
+### Environment Variables
+
+| Variable | Purpose |
+|----------|---------|
+| `DATABASE_URL` | Supabase PostgreSQL (`postgresql+asyncpg://...`) |
+| `SECRET_KEY` | JWT signing key |
+| `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` | LLM providers (mock fallback if unset) |
+| `AGENT_API_KEY` | n8n machine-to-machine auth header |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Bootstrap admin user |
+| `SLACK_BOT_TOKEN` / `SLACK_SIGNING_SECRET` | Victor approval notifications |
+
+---
+
+## Testing
+
+```bash
+python tests/verify_step1.py    # Import verification
+python tests/verify_step2.py    # ORM vs schema (requires DATABASE_URL)
+pytest tests/ -v                # Unit + integration tests
+```
+
+---
+
+## Project Structure
+
+```
+backend/app/
+├── api/routes/       # HTTP endpoints
+├── services/         # Business logic + pipeline state machine
+├── repositories/     # Async database access
+├── schemas/          # Pydantic request/response models
+├── agents/           # BaseAgent + 6 agent implementations
+├── models/           # SQLAlchemy ORM (16 tables + users)
+└── core/             # Config, enums, security, exceptions
+```
+
+---
+
 *Iron Ridge Fire Apparatus — Internal System*

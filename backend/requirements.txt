@@ -18,10 +18,11 @@ alembic==1.14.0
 # --- Pydantic v2 ---
 pydantic==2.10.3
 pydantic-settings==2.7.0  # Pydantic Settings for .env loading
+email-validator==2.2.0
 
 # --- Authentication ---
 python-jose[cryptography]==3.3.0   # JWT encode / decode
-passlib[bcrypt]==1.7.4             # Password hashing
+bcrypt==4.2.1
 python-multipart==0.0.20           # Required for OAuth2 form parsing
 
 # --- HTTP Client (agents call external LLMs / n8n) ---

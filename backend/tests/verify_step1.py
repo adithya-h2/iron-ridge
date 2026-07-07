@@ -1,8 +1,10 @@
 """Verify all Step 1 module imports are clean."""
 import sys
 import os
+from pathlib import Path
 
-sys.path.insert(0, "c:/eMpulse/backend")
+BACKEND_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(BACKEND_ROOT))
 os.environ["DATABASE_URL"] = "postgresql+asyncpg://test:test@localhost:5432/test"
 os.environ["SECRET_KEY"] = "test-secret-key-for-import-verification"
 

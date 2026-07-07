@@ -4,12 +4,15 @@ import os
 import json
 from pathlib import Path
 
-sys.path.insert(0, "c:/eMpulse/backend")
-os.environ["DATABASE_URL"] = "postgresql+asyncpg://postgres:tr5fq39v6abC3ulZ@db.poepunlikekdmfpzioxr.supabase.co:5432/postgres"
+BACKEND_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(BACKEND_ROOT))
+os.environ["DATABASE_URL"] = os.environ.get(
+    "DATABASE_URL", "postgresql+asyncpg://test:test@localhost:5432/test"
+)
 os.environ["SECRET_KEY"] = "test-key"
 
 # Load ground truth from schema dump
-schema_path = Path("c:/eMpulse/backend/tools/schema_dump.json")
+schema_path = BACKEND_ROOT / "tools" / "schema_dump.json"
 with open(schema_path) as f:
     schema = json.load(f)
 
