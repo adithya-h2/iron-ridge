@@ -42,6 +42,19 @@ class ApprovalStatus(StrEnum):
     REJECTED = "REJECTED"
 
 
+class LeadSource(StrEnum):
+    WEBSITE = "WEBSITE"
+    DASHBOARD = "DASHBOARD"
+    API = "API"
+    EMAIL = "EMAIL"
+    CSV = "CSV"
+    WHATSAPP = "WHATSAPP"
+    VOICE = "VOICE"
+    TRADE_SHOW = "TRADE_SHOW"
+    PHONE = "PHONE"
+    OTHER = "OTHER"
+
+
 # Valid pipeline transitions: from_status -> set of allowed to_statuses
 PIPELINE_TRANSITIONS: dict[DealStatus, set[DealStatus]] = {
     DealStatus.LEAD: {DealStatus.QUALIFICATION, DealStatus.REJECTED},

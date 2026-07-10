@@ -13,6 +13,9 @@ class DealCreate(BaseModel):
     current_agent: str | None = None
     lead_score: int | None = None
     approval_status: str | None = None
+    lead_source: str | None = None
+    workflow_id: UUID | None = None
+    submission_channel: str | None = None
 
 
 class DealUpdate(BaseModel):
@@ -22,6 +25,9 @@ class DealUpdate(BaseModel):
     current_agent: str | None = None
     lead_score: int | None = None
     approval_status: str | None = None
+    lead_source: str | None = None
+    workflow_id: UUID | None = None
+    submission_channel: str | None = None
 
 
 class DealTransitionRequest(BaseModel):
@@ -38,6 +44,9 @@ class DealResponse(BaseModel):
     current_agent: str | None = None
     lead_score: int | None = None
     approval_status: str | None = None
+    lead_source: str | None = None
+    workflow_id: UUID | None = None
+    submission_channel: str | None = None
     created_at: datetime | None = None
     updated_at: datetime | None = None
 

@@ -29,6 +29,7 @@ from app.repositories.customer import CustomerRepository
 from app.repositories.deal import DealRepository
 from app.repositories.delivery_plan import DeliveryPlanRepository
 from app.repositories.discount_master import DiscountMasterRepository
+from app.repositories.lead_creation import LeadCreationRepository
 from app.repositories.lead_validation import LeadValidationRepository
 from app.repositories.order import OrderRepository
 from app.repositories.price_master import PriceMasterRepository
@@ -47,8 +48,14 @@ from app.services.deal import DealService
 from app.services.order import OrderService
 from app.services.pipeline import PipelineService
 from app.services.pricing import PricingService
+from app.services.duplicate_detection import DuplicateDetectionService
+from app.services.lead_intake import LeadIntakeService
+from app.services.lead_validator import LeadValidator
+from app.services.notification_preparation import NotificationPreparationService
 from app.services.requirement import RequirementService
 from app.services.slack import SlackService
+from app.services.workflow import StubWorkflowService
+from app.services.workflow_trigger import WorkflowTriggerService
 
 logger = logging.getLogger(__name__)
 
@@ -122,6 +129,32 @@ async def get_slack_service(
     return SlackService(ApprovalRepository(db), QuotationRepository(db), approval_service)
 
 
+def get_workflow_service() -> StubWorkflowService:
+    return StubWorkflowService()
+
+
+def get_workflow_trigger_service(
+    workflow_service: StubWorkflowService = Depends(get_workflow_service),
+) -> WorkflowTriggerService:
+    return WorkflowTriggerService(workflow_service)
+
+
+async def get_lead_intake_service(
+    db: AsyncSession = Depends(get_db_session),
+    audit_service: AuditService = Depends(get_audit_service),
+    slack_service: SlackService = Depends(get_slack_service),
+    workflow_trigger: WorkflowTriggerService = Depends(get_workflow_trigger_service),
+) -> LeadIntakeService:
+    return LeadIntakeService(
+        lead_creation_repo=LeadCreationRepository(db),
+        lead_validator=LeadValidator(),
+        duplicate_detection=DuplicateDetectionService(CustomerRepository(db)),
+        audit_service=audit_service,
+        workflow_trigger=workflow_trigger,
+        notification_preparation=NotificationPreparationService(slack_service),
+    )
+
+
 async def get_agent_orchestrator(
     db: AsyncSession = Depends(get_db_session),
     audit_service: AuditService = Depends(get_audit_service),
@@ -129,12 +162,20 @@ async def get_agent_orchestrator(
     pricing_service: PricingService = Depends(get_pricing_service),
     approval_service: ApprovalService = Depends(get_approval_service),
     order_service: OrderService = Depends(get_order_service),
+    lead_intake_service: LeadIntakeService = Depends(get_lead_intake_service),
 ) -> AgentOrchestrator:
     llm = LLMClient()
     memory_repo = AgentMemoryRepository(db)
+    deal_repo = DealRepository(db)
     return AgentOrchestrator(
-        marty=MartyAgent(llm, memory_repo, audit_service, CustomerRepository(db), DealRepository(db)),
-        lisa=LisaAgent(llm, memory_repo, audit_service, DealRepository(db), LeadValidationRepository(db), pipeline_service),
+        marty=MartyAgent(
+            llm,
+            memory_repo,
+            audit_service,
+            lead_intake_service,
+            deal_repo,
+        ),
+        lisa=LisaAgent(llm, memory_repo, audit_service, deal_repo, LeadValidationRepository(db), pipeline_service),
         neil=NeilAgent(llm, memory_repo, audit_service, RequirementRepository(db), pipeline_service),
         paul=PaulAgent(llm, memory_repo, audit_service, pricing_service, pipeline_service, approval_service),
         sally=SallyAgent(llm, memory_repo, audit_service, order_service, pipeline_service),

@@ -5,22 +5,52 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, Request
 
-from app.api.deps import get_agent_orchestrator, get_slack_service
+from app.api.deps import get_agent_orchestrator, get_lead_intake_service, get_slack_service
+from app.core.enums import LeadSource
 from app.schemas.agent import AgentExecuteRequest, AgentExecuteResponse
+from app.schemas.common import ApiResponse
+from app.schemas.lead import LeadIntakeRequest, LeadIntakeResponse
 from app.services.agent_orchestrator import AgentOrchestrator
+from app.services.lead_intake import LeadIntakeService
 from app.services.slack import SlackService
 
 router = APIRouter()
 
 
-@router.post("/n8n/lead", response_model=AgentExecuteResponse)
+@router.post("/n8n/lead", response_model=ApiResponse[LeadIntakeResponse])
 async def n8n_lead_webhook(
+    request: Request,
+    lead_intake_service: LeadIntakeService = Depends(get_lead_intake_service),
+) -> ApiResponse[LeadIntakeResponse]:
+    """Entry point for n8n webhook — delegates to universal lead intake."""
+    body = await request.json()
+    if not isinstance(body, dict):
+        body = {}
+    intake_request = LeadIntakeRequest(
+        source=LeadSource.API,
+        submission_channel="n8n",
+        org_name=body.get("org_name"),
+        company_name=body.get("company_name"),
+        email=body.get("email"),
+        phone=body.get("phone"),
+        city=body.get("city"),
+        country=body.get("country"),
+        vehicle_type=body.get("vehicle_type"),
+        required_quantity=body.get("required_quantity"),
+        contact_person=body.get("contact_person"),
+    )
+    result = await lead_intake_service.intake(intake_request)
+    return ApiResponse(success=True, data=result)
+
+
+@router.post("/n8n/lead/marty", response_model=AgentExecuteResponse)
+async def n8n_lead_marty_webhook(
     request: Request,
     orchestrator: AgentOrchestrator = Depends(get_agent_orchestrator),
 ) -> AgentExecuteResponse:
-    """Entry point for n8n webhook — forwards to Marty agent."""
+    """Legacy n8n → Marty scoring path (backward compatible)."""
     body = await request.json()
-    input_data = AgentExecuteRequest(**body)
+    input_data = AgentExecuteRequest(**body) if isinstance(body, dict) else AgentExecuteRequest()
     return await orchestrator.execute("marty", input_data)
 
 

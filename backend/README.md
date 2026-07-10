@@ -146,6 +146,7 @@ Slack notification → Victor (approval gate only)
 | Approvals | `/approvals` | CRUD + decide + request |
 | Orders | `/orders` | CRUD |
 | Audit | `/audit` | Read-only audit trail by deal |
+| Lead Intake | `/api/v1/leads` | Universal lead intake (all channels) |
 | AI Agents | `/agents` | `POST /agents/{marty\|lisa\|neil\|paul\|sally\|adam}` |
 | Webhooks | `/webhooks` | n8n lead entry + Slack callbacks |
 
@@ -164,6 +165,25 @@ Agent routes accept **JSON or form-encoded POST** bodies and return flat JSON fo
 | `POST /agents/sally` | `order_id`, `status`, `current_agent` |
 | `POST /agents/adam` | `status`, `current_agent` |
 
+### Universal Lead Intake (Sprint A)
+
+All lead channels should use **`POST /api/v1/leads`** — website, dashboard, API, email, CSV, WhatsApp, voice, trade show, phone.
+
+```bash
+curl -X POST http://localhost:8000/api/v1/leads \
+  -H "Content-Type: application/json" \
+  -d '{"source":"WEBSITE","submission_channel":"web_form","company_name":"City Fire Dept"}'
+```
+
+See [`docs/LEAD_INTAKE_API.md`](docs/LEAD_INTAKE_API.md) for full contract.
+
+Legacy paths delegate to the same service:
+- `POST /webhooks/n8n/lead` → intake (no Marty scoring)
+- `POST /webhooks/n8n/lead/marty` → legacy Marty scoring
+- `POST /agents/marty` → intake + LLM scoring when `deal_id` absent
+
+Apply migration before use: `alembic upgrade head` (adds `lead_source`, `workflow_id`, `submission_channel` to `deals`).
+
 ---
 
 ## Setup
@@ -172,7 +192,7 @@ Agent routes accept **JSON or form-encoded POST** bodies and return flat JSON fo
 cd backend
 cp .env.example .env          # Fill in DATABASE_URL, SECRET_KEY, etc.
 pip install -r requirements.txt
-alembic upgrade head          # Creates users table
+alembic upgrade head          # Creates users table + lead intake columns on deals
 uvicorn app.main:app --reload
 ```
 

@@ -41,6 +41,7 @@ from app.api.routes import (
     requirements,
     webhooks,
 )
+from app.api.routes.v1 import leads as v1_leads
 from app.core.config import settings
 from app.core.logging import configure_logging
 from app.database.database import engine
@@ -236,3 +237,4 @@ app.include_router(orders.router, prefix="/orders", tags=["Orders"])
 app.include_router(audit.router, prefix="/audit", tags=["Audit"])
 app.include_router(agents.router, prefix="/agents", tags=["AI Agents"])
 app.include_router(webhooks.router, prefix="/webhooks", tags=["Webhooks"])
+app.include_router(v1_leads.router, prefix="/api/v1/leads", tags=["Lead Intake"])

@@ -65,6 +65,9 @@ class Deal(Base):
     current_agent: Mapped[str | None] = mapped_column(String, nullable=True)
     lead_score: Mapped[int | None] = mapped_column(Integer, nullable=True)
     approval_status: Mapped[str | None] = mapped_column(String, nullable=True)
+    lead_source: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    workflow_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
+    submission_channel: Mapped[str | None] = mapped_column(String(50), nullable=True)
     created_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     updated_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
