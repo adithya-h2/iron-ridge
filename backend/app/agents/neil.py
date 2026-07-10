@@ -2,11 +2,11 @@
 
 from datetime import datetime, timezone
 from typing import Any
-from uuid import UUID
 
 from app.agents.base import BaseAgent
 from app.core.enums import AgentName, DealStatus
 from app.core.exceptions import ValidationAppError
+from app.core.validators import parse_int_field, parse_uuid
 from app.repositories.requirement import RequirementRepository
 from app.schemas.agent import AgentExecuteRequest, AgentExecuteResponse
 from app.services.pipeline import PipelineService
@@ -42,8 +42,8 @@ class NeilAgent(BaseAgent):
         self, input_data: AgentExecuteRequest, llm_output: str
     ) -> AgentExecuteResponse:
         parsed = self._parse_json_from_llm(llm_output)
-        deal_id = UUID(input_data.deal_id)  # type: ignore[arg-type]
-        qty = int(input_data.required_quantity or 1)
+        deal_id = parse_uuid(input_data.deal_id, "deal_id")
+        qty = parse_int_field(input_data.required_quantity, "required_quantity", default=1)
         requirements_text = parsed.get("requirements", parsed.get("summary", ""))
         now = datetime.now(timezone.utc).replace(tzinfo=None)
 

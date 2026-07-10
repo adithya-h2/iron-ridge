@@ -1,5 +1,6 @@
 """Shared LLM client for all agents."""
 
+import asyncio
 import logging
 import re
 import time
@@ -8,6 +9,8 @@ from dataclasses import dataclass
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
+
+LLM_TIMEOUT_SECONDS = 30
 
 
 @dataclass
@@ -34,11 +37,20 @@ class LLMClient:
 
         try:
             if settings.ai_provider == "anthropic" and has_anthropic:
-                result = await self._call_anthropic(safe_system, safe_prompt)
+                result = await asyncio.wait_for(
+                    self._call_anthropic(safe_system, safe_prompt),
+                    timeout=LLM_TIMEOUT_SECONDS,
+                )
             elif has_openai:
-                result = await self._call_openai(safe_system, safe_prompt)
+                result = await asyncio.wait_for(
+                    self._call_openai(safe_system, safe_prompt),
+                    timeout=LLM_TIMEOUT_SECONDS,
+                )
             else:
                 result = self._mock_response(safe_prompt)
+        except asyncio.TimeoutError:
+            logger.warning("LLM call timed out, using mock response", extra={"timeout_s": LLM_TIMEOUT_SECONDS})
+            result = self._mock_response(safe_prompt)
         except Exception as exc:
             logger.warning("LLM call failed, using mock response", extra={"error": str(exc)})
             result = self._mock_response(safe_prompt)

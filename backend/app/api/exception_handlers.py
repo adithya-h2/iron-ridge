@@ -8,6 +8,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
 
+from app.core.config import settings
 from app.core.exceptions import AppError
 from app.schemas.common import ApiResponse, ErrorDetail
 
@@ -47,12 +48,28 @@ def register_exception_handlers(app: FastAPI) -> None:
     async def validation_error_handler(
         request: Request, exc: RequestValidationError
     ) -> JSONResponse:
+        details: dict[str, Any] = {}
+        if not settings.is_production:
+            details["errors"] = exc.errors()
         return _error_response(
             request,
             status.HTTP_422_UNPROCESSABLE_ENTITY,
             "VALIDATION_ERROR",
             "Request validation failed",
-            {"errors": exc.errors()},
+            details,
+        )
+
+    @app.exception_handler(ValueError)
+    async def value_error_handler(request: Request, exc: ValueError) -> JSONResponse:
+        logger.warning(
+            "Value error",
+            extra={"error": str(exc), "request_id": _request_id(request)},
+        )
+        return _error_response(
+            request,
+            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            "VALIDATION_ERROR",
+            str(exc) or "Invalid input value",
         )
 
     @app.exception_handler(SQLAlchemyError)

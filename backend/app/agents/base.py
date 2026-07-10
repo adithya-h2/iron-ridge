@@ -9,6 +9,7 @@ from uuid import UUID
 
 from app.agents.llm_client import LLMClient
 from app.core.enums import AgentName
+from app.core.validators import parse_uuid_optional
 from app.repositories.agent_memory import AgentMemoryRepository
 from app.schemas.agent import AgentExecuteRequest, AgentExecuteResponse
 from app.services.audit import AuditService
@@ -101,7 +102,7 @@ class BaseAgent(ABC):
         llm_result = await self.llm_client.complete(prompt, system)
         result = await self.process_response(input_data, llm_result.content)
 
-        deal_uuid = UUID(input_data.deal_id) if input_data.deal_id else None
+        deal_uuid = parse_uuid_optional(input_data.deal_id)
         parsed = self._parse_json_from_llm(llm_result.content)
         await self.save_memory(
             deal_uuid,

@@ -153,7 +153,7 @@ Interactive docs: `http://localhost:8000/docs`
 
 ### Agent Endpoints (n8n compatible)
 
-Agent routes accept **form-encoded POST** bodies and return flat JSON for n8n `$json.*` expressions.
+Agent routes accept **JSON or form-encoded POST** bodies and return flat JSON for n8n `$json.*` expressions.
 
 | Endpoint | Key response fields |
 |----------|---------------------|
@@ -178,14 +178,33 @@ uvicorn app.main:app --reload
 
 ### Environment Variables
 
+See `.env.example` for the full list. Copy to `.env` and never commit it.
+
 | Variable | Purpose |
 |----------|---------|
 | `DATABASE_URL` | Supabase PostgreSQL (`postgresql+asyncpg://...`) |
-| `SECRET_KEY` | JWT signing key |
+| `SECRET_KEY` | JWT signing key (required in production, min 32 chars) |
+| `AGENT_API_KEY` | n8n machine-to-machine auth via `X-API-KEY` header |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Bootstrap admin user (must not be `changeme` in production) |
 | `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` | LLM providers (mock fallback if unset) |
-| `AGENT_API_KEY` | n8n machine-to-machine auth header |
-| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Bootstrap admin user |
 | `SLACK_BOT_TOKEN` / `SLACK_SIGNING_SECRET` | Victor approval notifications |
+| `REDIS_URL` | Optional rate limiting (noop in dev when empty) |
+
+**Generate secure local secrets:**
+
+```bash
+# SECRET_KEY / AGENT_API_KEY (64 hex chars)
+openssl rand -hex 32
+
+# Or Python
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+**Production (`APP_ENV=production`):** startup fails if `SECRET_KEY` is a placeholder, `ADMIN_PASSWORD` is `changeme`, or `AGENT_API_KEY` is unset.
+
+### Agent endpoints (n8n)
+
+Agent routes accept **JSON or form-encoded** POST bodies. In production, send `X-API-KEY: <AGENT_API_KEY>` on every `/agents/*` request.
 
 ---
 
@@ -195,6 +214,7 @@ uvicorn app.main:app --reload
 python tests/verify_step1.py    # Import verification
 python tests/verify_step2.py    # ORM vs schema (requires DATABASE_URL)
 pytest tests/ -v                # Unit + integration tests
+pytest tests/ -v --cov=app --cov-report=term-missing   # With coverage
 ```
 
 ---

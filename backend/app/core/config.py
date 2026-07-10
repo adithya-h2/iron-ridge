@@ -14,8 +14,16 @@ Design decision:
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import AnyUrl, field_validator
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_INSECURE_SECRET_KEYS = frozenset(
+    {
+        "CHANGE_ME_IN_PRODUCTION",
+        "change-me-to-a-random-256-bit-secret",
+        "changeme",
+    }
+)
 
 
 class Settings(BaseSettings):
@@ -136,6 +144,26 @@ class Settings(BaseSettings):
     def is_development(self) -> bool:
         """True when running in development environment."""
         return self.app_env == "development"
+
+    @model_validator(mode="after")
+    def validate_production_secrets(self) -> "Settings":
+        """Fail fast when insecure defaults are used in production."""
+        if not self.is_production:
+            return self
+        if self.secret_key in _INSECURE_SECRET_KEYS or len(self.secret_key) < 32:
+            raise ValueError(
+                "SECRET_KEY must be a secure random value (>= 32 chars) in production. "
+                "Generate with: openssl rand -hex 32"
+            )
+        if self.admin_password == "changeme":
+            raise ValueError(
+                "ADMIN_PASSWORD must not be the default 'changeme' in production."
+            )
+        if not self.agent_api_key:
+            raise ValueError(
+                "AGENT_API_KEY is required in production when agent routes are exposed."
+            )
+        return self
 
 
 @lru_cache

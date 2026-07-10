@@ -19,6 +19,7 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
         start = time.perf_counter()
         status_code = 500
         error_msg: str | None = None
+        response: Response | None = None
 
         try:
             response = await call_next(request)
@@ -27,6 +28,14 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
             return response
         except Exception as exc:
             error_msg = str(exc)
+            logger.exception(
+                "Unhandled exception in request",
+                extra={
+                    "request_id": request_id,
+                    "method": request.method,
+                    "path": request.url.path,
+                },
+            )
             raise
         finally:
             duration_ms = round((time.perf_counter() - start) * 1000, 2)

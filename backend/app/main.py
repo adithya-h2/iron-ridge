@@ -27,6 +27,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import text
 
 from app.api.exception_handlers import register_exception_handlers
+from app.api.middleware.rate_limit import RateLimitMiddleware
 from app.api.middleware.request_logging import RequestLoggingMiddleware
 from app.api.routes import (
     agents,
@@ -139,6 +140,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(RateLimitMiddleware)
 app.add_middleware(RequestLoggingMiddleware)
 
 register_exception_handlers(app)
@@ -203,6 +205,7 @@ async def health_check() -> JSONResponse:
             exc_info=True,
         )
 
+        db_error = str(exc) if not settings.is_production else "Database connection failed"
         return JSONResponse(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             content={
@@ -212,7 +215,7 @@ async def health_check() -> JSONResponse:
                 "environment": settings.app_env,
                 "database": {
                     "status": "unreachable",
-                    "error": str(exc),
+                    "error": db_error,
                     "latency_ms": db_latency_ms,
                 },
             },

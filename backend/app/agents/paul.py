@@ -1,11 +1,11 @@
 """Paul — Pricing / BOM agent."""
 
 from typing import Any
-from uuid import UUID
 
 from app.agents.base import BaseAgent
 from app.core.enums import AgentName, ApprovalStatus, DealStatus
 from app.core.exceptions import ValidationAppError
+from app.core.validators import parse_int_field, parse_uuid
 from app.schemas.agent import AgentExecuteRequest, AgentExecuteResponse
 from app.services.approval import ApprovalService
 from app.services.pipeline import PipelineService
@@ -42,8 +42,8 @@ class PaulAgent(BaseAgent):
     async def process_response(
         self, input_data: AgentExecuteRequest, llm_output: str
     ) -> AgentExecuteResponse:
-        deal_id = UUID(input_data.deal_id)  # type: ignore[arg-type]
-        qty = int(input_data.required_quantity or 1)
+        deal_id = parse_uuid(input_data.deal_id, "deal_id")
+        qty = parse_int_field(input_data.required_quantity, "required_quantity", default=1)
         vehicle_type = input_data.vehicle_type or "Ambulance"
 
         quotation = await self.pricing_service.generate_quotation(deal_id, vehicle_type, qty)

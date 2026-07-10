@@ -1,11 +1,11 @@
 """Sally — Order Management agent."""
 
 from typing import Any
-from uuid import UUID
 
 from app.agents.base import BaseAgent
 from app.core.enums import AgentName, DealStatus
 from app.core.exceptions import ValidationAppError
+from app.core.validators import parse_uuid
 from app.schemas.agent import AgentExecuteRequest, AgentExecuteResponse
 from app.services.order import OrderService
 from app.services.pipeline import PipelineService
@@ -36,10 +36,11 @@ class SallyAgent(BaseAgent):
     async def process_response(
         self, input_data: AgentExecuteRequest, llm_output: str
     ) -> AgentExecuteResponse:
-        deal_id = UUID(input_data.deal_id)  # type: ignore[arg-type]
-        quotation_id = UUID(input_data.quotation_id)  # type: ignore[arg-type]
+        deal_id = parse_uuid(input_data.deal_id, "deal_id")
+        quotation_id = parse_uuid(input_data.quotation_id, "quotation_id")
 
-        if input_data.approval_status == "APPROVED":
+        approval_status = (input_data.approval_status or "").upper()
+        if approval_status == "APPROVED":
             await self.pipeline_service.transition(
                 deal_id,
                 DealStatus.APPROVED.value,

@@ -1,9 +1,10 @@
 """FastAPI dependency injection factories."""
 
+import logging
 from typing import Annotated, Callable
 from uuid import UUID
 
-from fastapi import Depends, Header, Request
+from fastapi import Depends, Request
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -46,7 +47,10 @@ from app.services.deal import DealService
 from app.services.order import OrderService
 from app.services.pipeline import PipelineService
 from app.services.pricing import PricingService
+from app.services.requirement import RequirementService
 from app.services.slack import SlackService
+
+logger = logging.getLogger(__name__)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login", auto_error=False)
 
@@ -103,6 +107,10 @@ async def get_order_service(db: AsyncSession = Depends(get_db_session)) -> Order
     return OrderService(OrderRepository(db), DeliveryPlanRepository(db))
 
 
+async def get_requirement_service(db: AsyncSession = Depends(get_db_session)) -> RequirementService:
+    return RequirementService(RequirementRepository(db))
+
+
 async def get_auth_service(db: AsyncSession = Depends(get_db_session)) -> AuthService:
     return AuthService(UserRepository(db))
 
@@ -134,20 +142,29 @@ async def get_agent_orchestrator(
     )
 
 
+def _get_api_key_from_request(request: Request) -> str | None:
+    return request.headers.get("X-API-KEY") or request.headers.get("x-api-key")
+
+
+def _agent_user_response() -> UserResponse:
+    return UserResponse(
+        user_id=UUID("00000000-0000-0000-0000-000000000001"),
+        email="agent@ironridge.com",
+        role=UserRole.AGENT.value,
+        is_active=True,
+    )
+
+
 async def get_current_user(
     request: Request,
     token: Annotated[str | None, Depends(oauth2_scheme)] = None,
-    x_api_key: Annotated[str | None, Header()] = None,
     db: AsyncSession = Depends(get_db_session),
 ) -> UserResponse | None:
-    if x_api_key and settings.agent_api_key and x_api_key == settings.agent_api_key:
+    api_key = _get_api_key_from_request(request)
+    if api_key and settings.agent_api_key and api_key == settings.agent_api_key:
         request.state.agent_name = "n8n"
-        return UserResponse(
-            user_id=UUID("00000000-0000-0000-0000-000000000001"),
-            email="agent@ironridge.com",
-            role=UserRole.AGENT.value,
-            is_active=True,
-        )
+        logger.info("Agent API key authenticated", extra={"path": request.url.path})
+        return _agent_user_response()
     if not token:
         return None
     payload = decode_access_token(token)
@@ -161,6 +178,24 @@ async def get_current_user(
 def require_auth(user: UserResponse | None = Depends(get_current_user)) -> UserResponse:
     if user is None:
         raise UnauthorizedError("Authentication required")
+    return user
+
+
+async def require_agent_access(
+    request: Request,
+    user: UserResponse | None = Depends(get_current_user),
+) -> UserResponse | None:
+    """Enforce AGENT_API_KEY in production; allow open access in development."""
+    api_key = _get_api_key_from_request(request)
+    if settings.is_production:
+        if not settings.agent_api_key:
+            raise ForbiddenError("Agent API key not configured")
+        if api_key != settings.agent_api_key:
+            raise UnauthorizedError("Valid agent API key required")
+        request.state.agent_name = request.state.agent_name or "n8n"
+        return user or _agent_user_response()
+    if api_key and settings.agent_api_key and api_key == settings.agent_api_key:
+        logger.info("Agent API key used", extra={"path": request.url.path})
     return user
 
 

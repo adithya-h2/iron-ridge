@@ -12,8 +12,10 @@ from slack_sdk.web.async_client import AsyncWebClient
 from app.core.config import settings
 from app.core.enums import AgentName, ApprovalStatus
 from app.core.exceptions import ValidationAppError
+from app.core.validators import parse_uuid
 from app.repositories.approval import ApprovalRepository
 from app.repositories.quotation import QuotationRepository
+from app.schemas.approval import ApprovalDecideRequest
 from app.services.approval import ApprovalService
 
 logger = logging.getLogger(__name__)
@@ -104,7 +106,7 @@ class SlackService:
             raise ValidationAppError("No actions in Slack payload")
 
         action_value = json.loads(actions[0].get("value", "{}"))
-        quotation_id = UUID(action_value["quotation_id"])
+        quotation_id = parse_uuid(action_value.get("quotation_id"), "quotation_id")
         decision = (
             ApprovalStatus.APPROVED.value
             if action_value.get("approval_action") == "approve"
@@ -125,3 +127,51 @@ class SlackService:
             ),
         )
         return {"ok": True, "decision": decision}
+
+    async def send_order_created_notification(
+        self,
+        deal_id: UUID,
+        order_id: UUID,
+        customer_name: str | None = None,
+    ) -> None:
+        if not settings.slack_bot_token:
+            logger.info(
+                "Slack not configured — skipping order notification",
+                extra={"deal_id": str(deal_id), "order_id": str(order_id)},
+            )
+            return
+        text = (
+            f"*Order Created* — Deal `{deal_id}`\n"
+            f"Order: `{order_id}`\n"
+            f"Customer: {customer_name or 'N/A'}"
+        )
+        await self.client.chat_postMessage(
+            channel=settings.slack_approval_channel,
+            text=text,
+        )
+
+    async def send_pipeline_failure_notification(
+        self,
+        deal_id: UUID | None,
+        agent_name: str,
+        error_message: str,
+    ) -> None:
+        if not settings.slack_bot_token:
+            logger.warning(
+                "Slack not configured — pipeline failure logged only",
+                extra={
+                    "deal_id": str(deal_id) if deal_id else None,
+                    "agent": agent_name,
+                    "error": error_message,
+                },
+            )
+            return
+        text = (
+            f"*Pipeline Failure* — Agent `{agent_name}`\n"
+            f"Deal: `{deal_id or 'N/A'}`\n"
+            f"Error: {error_message}"
+        )
+        await self.client.chat_postMessage(
+            channel=settings.slack_approval_channel,
+            text=text,
+        )
