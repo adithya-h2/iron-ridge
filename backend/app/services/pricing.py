@@ -35,6 +35,10 @@ class PricingService:
         self.discount_master_repo = discount_master_repo
         self.vehicle_master_repo = vehicle_master_repo
 
+    async def _to_response(self, quotation_id: UUID) -> QuotationResponse:
+        quotation = await self.quotation_repo.get_with_items_or_raise(quotation_id)
+        return QuotationResponse.model_validate(quotation)
+
     async def generate_quotation(
         self,
         deal_id: UUID,
@@ -95,11 +99,10 @@ class PricingService:
             discount=discount_amount,
             total=grand_total,
         )
-        return QuotationResponse.model_validate(quotation)
+        return await self._to_response(quotation.quotation_id)
 
     async def get(self, quotation_id: UUID) -> QuotationResponse:
-        q = await self.quotation_repo.get_by_id_or_raise(quotation_id)
-        return QuotationResponse.model_validate(q)
+        return await self._to_response(quotation_id)
 
     async def create(self, data: QuotationCreate) -> QuotationResponse:
         now = datetime.now(timezone.utc).replace(tzinfo=None)
@@ -109,4 +112,4 @@ class PricingService:
         )
         for item in data.items:
             await self.quotation_item_repo.create(quotation_id=q.quotation_id, **item.model_dump())
-        return QuotationResponse.model_validate(q)
+        return await self._to_response(q.quotation_id)
