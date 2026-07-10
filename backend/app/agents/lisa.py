@@ -32,8 +32,22 @@ class LisaAgent(BaseAgent):
         self.pipeline_service = pipeline_service
 
     def validate_input(self, input_data: AgentExecuteRequest) -> None:
-        if not input_data.deal_id:
-            raise ValidationAppError("deal_id is required for Lisa agent")
+        if not input_data.deal_id and not input_data.org_name:
+            raise ValidationAppError("deal_id or org_name is required for Lisa agent")
+
+    async def _resolve_deal_id(self, input_data: AgentExecuteRequest):
+        if input_data.deal_id:
+            return parse_uuid(input_data.deal_id, "deal_id")
+
+        company = (input_data.org_name or input_data.company_name or "").strip()
+        deal = await self.deal_repo.get_latest_lead_by_company_name(company)
+        if deal is None:
+            raise ValidationAppError(
+                f"No LEAD deal found for company '{company}'",
+                details={"org_name": company},
+            )
+        input_data.deal_id = str(deal.deal_id)
+        return deal.deal_id
 
     def build_prompt(self, context: dict[str, Any]) -> str:
         return (
@@ -46,7 +60,7 @@ class LisaAgent(BaseAgent):
         self, input_data: AgentExecuteRequest, llm_output: str
     ) -> AgentExecuteResponse:
         parsed = self._parse_json_from_llm(llm_output)
-        deal_id = parse_uuid(input_data.deal_id, "deal_id")
+        deal_id = await self._resolve_deal_id(input_data)
         lead_score = parse_int_field(input_data.lead_score or parsed.get("lead_score", 75), "lead_score", default=75)
         qualified = lead_score >= 80 or bool(parsed.get("qualified", False))
         now = datetime.now(timezone.utc).replace(tzinfo=None)
