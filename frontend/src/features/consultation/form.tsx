@@ -4,29 +4,23 @@ import { useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, Check } from "lucide-react";
+import Link from "next/link";
 
 import { ErrorAlert } from "@/components/common/error-alert";
-import { FormInput } from "@/components/forms/form-input";
-import { FormSelect } from "@/components/forms/form-select";
-import { FormTextarea } from "@/components/forms/form-textarea";
+import { FormInput, FormCheckbox, FormSelect, FormTextarea } from "@/components/forms";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  budgetOptions,
   consultationFormSchema,
-  timelineOptions,
   toLeadPayload,
-  vehicleTypeOptions,
+  orgTypeOptions,
+  preferredContactMethodOptions,
+  vehicleCategoryOptions,
+  quantityOptions,
+  purchaseTimelineOptions,
   type ConsultationFormValues,
 } from "@/features/consultation/schema";
 import { useSubmitLead } from "@/features/consultation/use-submit-lead";
@@ -40,17 +34,22 @@ export function ConsultationForm() {
     resolver: zodResolver(consultationFormSchema),
     defaultValues: {
       company_name: "",
+      org_type: "",
       department: "",
+      website: "",
       contact_person: "",
+      job_title: "",
       email: "",
       phone: "",
-      city: "",
+      preferred_contact_method: "",
+      country: "",
       state: "",
+      city: "",
       vehicle_type: "",
-      required_quantity: 1,
+      required_quantity: "",
       expected_timeline: "",
-      budget_range: "",
       notes: "",
+      consent: false,
     },
   });
 
@@ -71,27 +70,51 @@ export function ConsultationForm() {
     await mutation.mutateAsync(toLeadPayload(values));
   });
 
+  const notesValue = form.watch("notes") || "";
+
   if (mutation.isSuccess && mutation.data) {
     return (
-      <Card ref={successRef} tabIndex={-1} aria-live="polite">
-        <CardHeader>
-          <CardTitle className="text-success">Consultation Request Received</CardTitle>
-          <CardDescription>
-            Thank you for contacting Iron Ridge. A member of our team will reach out within one
-            business day.
+      <Card
+        ref={successRef}
+        tabIndex={-1}
+        aria-live="polite"
+        className="mx-auto max-w-xl text-center border-none shadow-none bg-transparent"
+      >
+        <CardHeader className="space-y-4">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400">
+            <Check className="h-7 w-7" />
+          </div>
+          <CardTitle className="text-3xl font-extrabold text-charcoal tracking-tight">
+            Thank You
+          </CardTitle>
+          <CardDescription className="text-base text-steel leading-relaxed">
+            Thank you for your interest in Iron Ridge.
+            <br />
+            Our team will review your request, verify your organization, and contact you shortly.
+            <br />
+            If your requirements match our solutions, one of our specialists will guide you through
+            the next stage of the consultation process.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-2 text-sm text-steel">
-          <p>
-            <span className="font-medium text-charcoal">Reference ID:</span>{" "}
-            {mutation.data.deal_id}
-          </p>
-          {mutation.data.is_duplicate ? (
-            <p className="text-accent-orange">
-              We found an existing record for your organization and have linked this request
-              accordingly.
+        <CardContent className="space-y-6 pt-2">
+          <div className="bg-slate-50 border border-slate-100 rounded-lg p-4 inline-block text-sm space-y-1 text-steel">
+            <p>
+              <span className="font-medium text-charcoal">Reference ID:</span>{" "}
+              <code className="text-accent-red font-mono font-bold">{mutation.data.deal_id}</code>
             </p>
-          ) : null}
+            {mutation.data.is_duplicate ? (
+              <p className="text-accent-orange font-medium mt-1 text-xs">
+                An existing record was found for your organization and this request has been linked.
+              </p>
+            ) : null}
+          </div>
+          <div className="pt-2">
+            <Link href="/" passHref legacyBehavior>
+              <Button className="px-8 py-3 bg-accent-red text-white hover:bg-accent-red/90 transition-colors font-medium rounded-md shadow-md hover:shadow-lg cursor-pointer">
+                Return Home
+              </Button>
+            </Link>
+          </div>
         </CardContent>
       </Card>
     );
@@ -99,7 +122,7 @@ export function ConsultationForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={onSubmit} className="space-y-8" noValidate>
+      <form onSubmit={onSubmit} className="space-y-10" noValidate>
         {mutation.isError ? (
           <ErrorAlert
             title="Unable to submit request"
@@ -107,93 +130,200 @@ export function ConsultationForm() {
           />
         ) : null}
 
-        <fieldset className="space-y-4">
-          <legend className="text-lg font-bold text-charcoal">Organization</legend>
-          <div className="grid gap-4 md:grid-cols-2">
-            <FormInput control={form.control} name="company_name" label="Organization" />
-            <FormInput control={form.control} name="department" label="Department" />
+        {/* Section 1: Organization Information */}
+        <fieldset className="space-y-6">
+          <legend className="text-xl font-bold text-charcoal tracking-tight">
+            1. Organization Information
+          </legend>
+          <div className="grid gap-6 md:grid-cols-2">
+            <FormInput
+              control={form.control}
+              name="company_name"
+              label="Organization Name *"
+              placeholder="e.g. City Fire Department"
+            />
+            <FormSelect
+              control={form.control}
+              name="org_type"
+              label="Organization Type *"
+              options={[...orgTypeOptions]}
+              placeholder="Select organization type..."
+            />
+            <FormInput
+              control={form.control}
+              name="department"
+              label="Department (Optional)"
+              placeholder="e.g. Fleet Procurement"
+            />
+            <FormInput
+              control={form.control}
+              name="website"
+              label="Website (Optional)"
+              placeholder="e.g. www.cityfire.org"
+            />
           </div>
         </fieldset>
 
-        <fieldset className="space-y-4">
-          <legend className="text-lg font-bold text-charcoal">Contact Information</legend>
-          <div className="grid gap-4 md:grid-cols-2">
-            <FormInput control={form.control} name="contact_person" label="Contact Person" />
-            <FormInput control={form.control} name="email" label="Email" type="email" />
-            <FormInput control={form.control} name="phone" label="Phone" type="tel" />
+        {/* Section 2: Contact Information */}
+        <fieldset className="space-y-6 border-t border-slate-100 pt-8">
+          <legend className="text-xl font-bold text-charcoal tracking-tight">
+            2. Contact Information
+          </legend>
+          <div className="grid gap-6 md:grid-cols-2">
+            <FormInput
+              control={form.control}
+              name="contact_person"
+              label="Contact Person *"
+              placeholder="e.g. Chief John Doe"
+            />
+            <FormInput
+              control={form.control}
+              name="job_title"
+              label="Job Title (Optional)"
+              placeholder="e.g. Fleet Manager"
+            />
+            <FormInput
+              control={form.control}
+              name="email"
+              label="Business Email *"
+              type="email"
+              placeholder="e.g. jdoe@cityfire.org"
+            />
+            <FormInput
+              control={form.control}
+              name="phone"
+              label="Phone Number *"
+              type="tel"
+              placeholder="e.g. (555) 123-4567"
+            />
+            <div className="md:col-span-2">
+              <div className="max-w-md">
+                <FormSelect
+                  control={form.control}
+                  name="preferred_contact_method"
+                  label="Preferred Contact Method (Optional)"
+                  options={[...preferredContactMethodOptions]}
+                  placeholder="Select preferred method..."
+                />
+              </div>
+            </div>
           </div>
         </fieldset>
 
-        <fieldset className="space-y-4">
-          <legend className="text-lg font-bold text-charcoal">Location</legend>
-          <div className="grid gap-4 md:grid-cols-2">
-            <FormInput control={form.control} name="city" label="City" />
-            <FormInput control={form.control} name="state" label="State" />
+        {/* Section 3: Location */}
+        <fieldset className="space-y-6 border-t border-slate-100 pt-8">
+          <legend className="text-xl font-bold text-charcoal tracking-tight">
+            3. Location
+          </legend>
+          <div className="grid gap-6 md:grid-cols-3">
+            <FormInput
+              control={form.control}
+              name="country"
+              label="Country *"
+              placeholder="e.g. USA"
+            />
+            <FormInput
+              control={form.control}
+              name="state"
+              label="State *"
+              placeholder="e.g. TX"
+            />
+            <FormInput
+              control={form.control}
+              name="city"
+              label="City *"
+              placeholder="e.g. Austin"
+            />
           </div>
         </fieldset>
 
-        <fieldset className="space-y-4">
-          <legend className="text-lg font-bold text-charcoal">Vehicle Requirements</legend>
-          <div className="grid gap-4 md:grid-cols-2">
+        {/* Section 4: Purchase Interest */}
+        <fieldset className="space-y-6 border-t border-slate-100 pt-8">
+          <legend className="text-xl font-bold text-charcoal tracking-tight">
+            4. Purchase Interest
+          </legend>
+          <div className="grid gap-6 md:grid-cols-3">
             <FormSelect
               control={form.control}
               name="vehicle_type"
-              label="Vehicle Type"
-              options={[...vehicleTypeOptions]}
+              label="Vehicle Category *"
+              options={[...vehicleCategoryOptions]}
+              placeholder="Select category..."
             />
-            <FormField
+            <FormSelect
               control={form.control}
               name="required_quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Quantity</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      min={1}
-                      {...field}
-                      onChange={(e) => field.onChange(e.target.valueAsNumber || 1)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Estimated Quantity *"
+              options={[...quantityOptions]}
+              placeholder="Select quantity..."
             />
             <FormSelect
               control={form.control}
               name="expected_timeline"
-              label="Expected Timeline"
-              options={[...timelineOptions]}
-            />
-            <FormSelect
-              control={form.control}
-              name="budget_range"
-              label="Budget Range (Optional)"
-              options={[...budgetOptions]}
+              label="Purchase Timeline *"
+              options={[...purchaseTimelineOptions]}
+              placeholder="Select timeline..."
             />
           </div>
-          <FormTextarea
-            control={form.control}
-            name="notes"
-            label="Additional Notes"
-            placeholder="Describe specific requirements, apparatus standards, or fleet considerations..."
-          />
         </fieldset>
 
-        <Button
-          type="submit"
-          disabled={mutation.isPending}
-          className="w-full bg-accent-red text-white hover:bg-accent-red/90 md:w-auto"
-        >
-          {mutation.isPending ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Submitting...
-            </>
-          ) : (
-            "Submit Consultation Request"
-          )}
-        </Button>
+        {/* Section 5: About Your Requirement */}
+        <fieldset className="space-y-4 border-t border-slate-100 pt-8">
+          <legend className="text-xl font-bold text-charcoal tracking-tight">
+            5. About Your Requirement
+          </legend>
+          <FormField
+            control={form.control}
+            name="notes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Requirement Details (Optional)</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Briefly describe your operational needs or what prompted your interest."
+                    maxLength={500}
+                    className="min-h-32 resize-none"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="text-right text-xs text-steel">
+            {notesValue.length} / 500 characters
+          </div>
+        </fieldset>
+
+        {/* Section 6: Consent */}
+        <fieldset className="space-y-4 border-t border-slate-100 pt-8">
+          <legend className="sr-only">Consent</legend>
+          <div className="rounded-lg border border-slate-100 bg-slate-50/50 p-4 transition-colors hover:bg-slate-50">
+            <FormCheckbox
+              control={form.control}
+              name="consent"
+              label="I agree that Iron Ridge may contact me regarding this consultation request. *"
+            />
+          </div>
+        </fieldset>
+
+        {/* Submit Button */}
+        <div className="pt-6 border-t border-slate-100 flex justify-end">
+          <Button
+            type="submit"
+            disabled={mutation.isPending}
+            className="w-full md:w-auto px-8 py-4 bg-accent-red text-white hover:bg-accent-red/90 active:scale-[0.98] transition-all font-semibold rounded-md shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+          >
+            {mutation.isPending ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                Submitting...
+              </>
+            ) : (
+              "Request Consultation"
+            )}
+          </Button>
+        </div>
       </form>
     </Form>
   );
