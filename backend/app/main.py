@@ -152,6 +152,17 @@ register_exception_handlers(app)
 # System routes (health, readiness, metrics)
 # ---------------------------------------------------------------------------
 
+@app.get("/", tags=["System"])
+async def root():
+    """Root endpoint verifying application status and metadata."""
+    return {
+        "status": "healthy",
+        "app_name": settings.app_name,
+        "version": settings.app_version,
+        "docs_url": "/docs"
+    }
+
+
 app.include_router(health.router, tags=["System"])
 
 # ---------------------------------------------------------------------------
