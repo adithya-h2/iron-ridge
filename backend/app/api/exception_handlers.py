@@ -85,10 +85,24 @@ def register_exception_handlers(app: FastAPI) -> None:
     ) -> JSONResponse:
         details: dict[str, Any] = {}
         if not settings.is_production:
-            details["errors"] = exc.errors()
+            errors = []
+            for err in exc.errors():
+                err_copy = dict(err)
+                if "ctx" in err_copy and isinstance(err_copy["ctx"], dict):
+                    err_copy["ctx"] = {
+                        k: str(v) if isinstance(v, Exception) else v
+                        for k, v in err_copy["ctx"].items()
+                    }
+                errors.append(err_copy)
+            details["errors"] = errors
+        
+        status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+        if request.url.path.startswith("/api/v1/consultations"):
+            status_code = status.HTTP_400_BAD_REQUEST
+            
         return _error_response(
             request,
-            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code,
             "VALIDATION_ERROR",
             "Request validation failed",
             details,

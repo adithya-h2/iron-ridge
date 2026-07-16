@@ -105,6 +105,10 @@ class Settings(BaseSettings):
     # n8n (external orchestrator)
     # -----------------------------------------------------------------------
     n8n_webhook_base_url: str = ""
+    n8n_webhook_url: str = ""
+    next_public_frontend_url: str = ""
+    supabase_url: str = ""
+    supabase_key: str = ""
 
     # -----------------------------------------------------------------------
     # Slack (human-in-the-loop notifications ONLY)

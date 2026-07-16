@@ -26,6 +26,7 @@ from app.repositories.audit_log import AuditLogRepository
 from app.repositories.bom import BOMRepository
 from app.repositories.bom_item import BOMItemRepository
 from app.repositories.customer import CustomerRepository
+from app.repositories.consultation_repository import ConsultationRepository
 from app.repositories.deal import DealRepository
 from app.repositories.delivery_plan import DeliveryPlanRepository
 from app.repositories.discount_master import DiscountMasterRepository
@@ -44,6 +45,7 @@ from app.services.approval import ApprovalService
 from app.services.audit import AuditService
 from app.services.auth import AuthService
 from app.services.customer import CustomerService
+from app.services.consultation_service import ConsultationService
 from app.services.deal import DealService
 from app.services.order import OrderService
 from app.services.pipeline import PipelineService
@@ -297,3 +299,15 @@ async def get_dashboard_service(
 
 def get_quotation_pdf_service() -> QuotationPdfService:
     return QuotationPdfService()
+
+
+async def get_consultation_repository(
+    db: AsyncSession = Depends(get_db_session),
+) -> ConsultationRepository:
+    return ConsultationRepository(db)
+
+
+async def get_consultation_service(
+    repo: ConsultationRepository = Depends(get_consultation_repository),
+) -> ConsultationService:
+    return ConsultationService(repo)

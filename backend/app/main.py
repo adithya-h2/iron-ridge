@@ -32,6 +32,7 @@ from app.api.routes import (
     approvals,
     audit,
     auth,
+    consultations,
     customers,
     dashboard,
     deals,
@@ -183,3 +184,4 @@ app.include_router(v1_leads.router, prefix="/api/v1/leads", tags=["Lead Intake"]
 app.include_router(v1_workflows.router, prefix="/api/v1/workflows", tags=["Workflows"])
 app.include_router(v1_notifications.router, prefix="/api/v1/notifications", tags=["Notifications"])
 app.include_router(dashboard.router, prefix="/dashboard", tags=["Dashboard"])
+app.include_router(consultations.router, prefix="/api/v1/consultations", tags=["Consultations"])
