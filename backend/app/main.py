@@ -84,28 +84,31 @@ async def lifespan(app: FastAPI):
         },
     )
 
-    # Verify database connectivity at startup
+    # Verify database connectivity at startup (non-fatal — app serves /health and /docs degraded)
+    db_ok = False
     try:
         async with engine.connect() as conn:
             await conn.execute(text("SELECT 1"))
+        db_ok = True
         logger.info("Database connectivity verified at startup.")
     except Exception as exc:
-        logger.critical(
-            "STARTUP FAILED: Cannot connect to database. Check DATABASE_URL.",
+        logger.warning(
+            "Database not reachable at startup; running in degraded mode. "
+            "Use Supabase pooler URL (port 6543) with SSL on Render/Railway.",
             extra={"error": str(exc)},
             exc_info=True,
         )
-        raise
 
-    # Bootstrap admin user if not exists
-    try:
-        async with AsyncSessionFactory() as session:
-            auth_service = AuthService(UserRepository(session))
-            await auth_service.ensure_admin_exists(settings.admin_email, settings.admin_password)
-            await session.commit()
-        logger.info("Admin user bootstrap complete.")
-    except Exception as exc:
-        logger.warning("Admin bootstrap skipped", extra={"error": str(exc)})
+    # Bootstrap admin user only when database is reachable
+    if db_ok:
+        try:
+            async with AsyncSessionFactory() as session:
+                auth_service = AuthService(UserRepository(session))
+                await auth_service.ensure_admin_exists(settings.admin_email, settings.admin_password)
+                await session.commit()
+            logger.info("Admin user bootstrap complete.")
+        except Exception as exc:
+            logger.warning("Admin bootstrap skipped", extra={"error": str(exc)})
 
     yield  # Application runs here
 

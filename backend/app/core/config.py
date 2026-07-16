@@ -68,6 +68,7 @@ class Settings(BaseSettings):
     db_pool_timeout: int = 30      # Seconds to wait for a connection
     db_pool_recycle: int = 1800    # Recycle connections after 30 min (avoids stale)
     db_echo: bool = False          # Set True in dev to log all SQL queries
+    database_ssl: bool = True      # Required for Supabase from Render/Railway; set false for local Postgres without SSL
 
     @field_validator("database_url", mode="before")
     @classmethod

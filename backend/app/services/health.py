@@ -52,8 +52,9 @@ class HealthService:
         return {"status": "configured" if configured else "not_configured"}
 
     async def get_health(self) -> dict:
+        """Liveness payload — process is up; database may be degraded."""
         db = await self.check_database()
-        status_label = "healthy" if db["status"] == "connected" else "unhealthy"
+        status_label = "healthy" if db["status"] == "connected" else "degraded"
         return {
             "status": status_label,
             "app": settings.app_name,

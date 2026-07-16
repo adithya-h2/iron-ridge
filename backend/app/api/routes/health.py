@@ -17,10 +17,9 @@ def get_health_service() -> HealthService:
 async def health_check(
     service: HealthService = Depends(get_health_service),
 ) -> JSONResponse:
-    """Liveness probe — app is running."""
+    """Liveness probe — returns 200 while the process is running (DB may be degraded)."""
     content = await service.get_health()
-    code = status.HTTP_200_OK if content["status"] == "healthy" else status.HTTP_503_SERVICE_UNAVAILABLE
-    return JSONResponse(status_code=code, content=content)
+    return JSONResponse(status_code=status.HTTP_200_OK, content=content)
 
 
 @router.get("/ready", tags=["System"])
