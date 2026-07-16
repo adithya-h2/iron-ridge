@@ -19,6 +19,10 @@ class ApprovalDecideRequest(BaseModel):
     remarks: str | None = None
 
 
+class ApprovalRequestBody(BaseModel):
+    quotation_id: UUID
+
+
 class ApprovalResponse(BaseModel):
     approval_id: UUID
     quotation_id: UUID | None = None

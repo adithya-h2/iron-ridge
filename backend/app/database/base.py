@@ -41,3 +41,4 @@ from app.models.delivery_plan import DeliveryPlan     # noqa: F401
 from app.models.agent_memory import AgentMemory       # noqa: F401
 from app.models.audit_log import AuditLog             # noqa: F401
 from app.models.user import User                      # noqa: F401
+from app.models.workflow_execution_state import WorkflowExecutionState  # noqa: F401

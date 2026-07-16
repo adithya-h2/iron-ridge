@@ -126,6 +126,43 @@ class Settings(BaseSettings):
     redis_url: str = ""
 
     # -----------------------------------------------------------------------
+    # HTTP timeouts
+    # -----------------------------------------------------------------------
+    llm_timeout_seconds: int = 30
+    n8n_timeout_seconds: int = 15
+    external_http_timeout_seconds: int = 30
+
+    # -----------------------------------------------------------------------
+    # Email (optional)
+    # -----------------------------------------------------------------------
+    email_enabled: bool = False
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    email_from: str = "noreply@ironridge.com"
+
+    # -----------------------------------------------------------------------
+    # Feature flags
+    # -----------------------------------------------------------------------
+    feature_pdf_export: bool = True
+    feature_dashboard: bool = True
+    feature_retry_tracking: bool = True
+    feature_email_notifications: bool = False
+    feature_n8n_publish: bool = False
+
+    # -----------------------------------------------------------------------
+    # PDF branding
+    # -----------------------------------------------------------------------
+    pdf_company_name: str = "Iron Ridge Fire Apparatus"
+    pdf_company_address: str = "123 Fire Station Road, Denver, CO"
+
+    # -----------------------------------------------------------------------
+    # Metrics
+    # -----------------------------------------------------------------------
+    metrics_enabled: bool = True
+
+    # -----------------------------------------------------------------------
     # CORS
     # -----------------------------------------------------------------------
     allowed_origins: str = "http://localhost:3000"

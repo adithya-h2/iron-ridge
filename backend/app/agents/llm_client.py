@@ -10,8 +10,6 @@ from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
-LLM_TIMEOUT_SECONDS = 30
-
 
 @dataclass
 class LLMResult:
@@ -39,17 +37,20 @@ class LLMClient:
             if settings.ai_provider == "anthropic" and has_anthropic:
                 result = await asyncio.wait_for(
                     self._call_anthropic(safe_system, safe_prompt),
-                    timeout=LLM_TIMEOUT_SECONDS,
+                    timeout=settings.llm_timeout_seconds,
                 )
             elif has_openai:
                 result = await asyncio.wait_for(
                     self._call_openai(safe_system, safe_prompt),
-                    timeout=LLM_TIMEOUT_SECONDS,
+                    timeout=settings.llm_timeout_seconds,
                 )
             else:
                 result = self._mock_response(safe_prompt)
         except asyncio.TimeoutError:
-            logger.warning("LLM call timed out, using mock response", extra={"timeout_s": LLM_TIMEOUT_SECONDS})
+            logger.warning(
+                "LLM call timed out, using mock response",
+                extra={"timeout_s": settings.llm_timeout_seconds},
+            )
             result = self._mock_response(safe_prompt)
         except Exception as exc:
             logger.warning("LLM call failed, using mock response", extra={"error": str(exc)})

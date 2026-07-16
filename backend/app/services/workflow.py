@@ -4,6 +4,9 @@ import logging
 from typing import Protocol
 from uuid import UUID
 
+import httpx
+
+from app.core.config import settings
 from app.core.enums import LeadSource
 
 logger = logging.getLogger(__name__)
@@ -21,7 +24,7 @@ class WorkflowService(Protocol):
 
 
 class StubWorkflowService:
-    """Logs workflow events; Sprint B adds N8nWorkflowAdapter."""
+    """Logs workflow events; optionally POSTs to n8n when feature_n8n_publish is enabled."""
 
     async def publish_lead_created(
         self,
@@ -40,3 +43,37 @@ class StubWorkflowService:
                 "payload_keys": list(payload.keys()),
             },
         )
+        if not (settings.feature_n8n_publish and settings.n8n_webhook_base_url):
+            return
+
+        url = settings.n8n_webhook_base_url.rstrip("/")
+        body = {
+            "workflow_id": str(workflow_id),
+            "deal_id": str(deal_id),
+            "source": source.value,
+            **payload,
+        }
+        request_id = payload.get("request_id")
+        log_extra = {
+            "url": url,
+            "deal_id": str(deal_id),
+            "workflow_id": str(workflow_id),
+            "request_id": request_id,
+        }
+        try:
+            async with httpx.AsyncClient(timeout=settings.n8n_timeout_seconds) as client:
+                response = await client.post(url, json=body)
+            if response.status_code >= 400:
+                logger.warning(
+                    "n8n publish failed",
+                    extra={
+                        **log_extra,
+                        "status_code": response.status_code,
+                        "response_body": response.text[:500],
+                    },
+                )
+        except Exception as exc:
+            logger.warning(
+                "n8n publish failed",
+                extra={**log_extra, "error": str(exc)},
+            )

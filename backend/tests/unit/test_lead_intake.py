@@ -119,4 +119,4 @@ async def test_lead_intake_service_happy_path():
     assert result.workflow_id == workflow_id
     assert result.is_duplicate is False
     audit_service.log_action.assert_awaited_once()
-    workflow_trigger.trigger_lead_created.assert_awaited_once()
+    workflow_trigger.trigger_lead_created.assert_not_called()

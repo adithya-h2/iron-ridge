@@ -42,6 +42,12 @@ class DealService:
         deal = await self.deal_repo.get_by_id_or_raise(deal_id)
         return DealResponse.model_validate(deal)
 
+    async def get_company_name(self, deal_id: UUID) -> str | None:
+        deal = await self.deal_repo.get_with_customer(deal_id)
+        if deal and deal.customer:
+            return deal.customer.company_name
+        return None
+
     async def list(
         self,
         pagination: PaginationParams | None = None,

@@ -23,6 +23,7 @@ import sys
 from datetime import datetime, timezone
 
 from app.core.config import settings
+from app.core.log_context import get_log_context
 
 
 class JSONFormatter(logging.Formatter):
@@ -48,6 +49,7 @@ class JSONFormatter(logging.Formatter):
             "level": record.levelname,
             "logger": record.name,
             "message": record.getMessage(),
+            **{k: v for k, v in get_log_context().items() if v is not None},
         }
 
         # Attach extra fields if provided

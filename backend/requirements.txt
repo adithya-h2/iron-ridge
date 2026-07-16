@@ -41,6 +41,7 @@ redis==5.2.1
 # --- Utilities ---
 python-dotenv==1.0.1
 tenacity==9.0.0          # Retry logic for LLM and external API calls
+reportlab==4.2.5         # Quotation PDF generation
 
 # --- Logging ---
 structlog==24.4.0        # Structured JSON logging

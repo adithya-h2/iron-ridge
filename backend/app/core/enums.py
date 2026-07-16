@@ -71,3 +71,37 @@ PIPELINE_TRANSITIONS: dict[DealStatus, set[DealStatus]] = {
     DealStatus.REJECTED: set(),
     DealStatus.DELIVERED: set(),
 }
+
+# Ordered pipeline stages for progress calculation (excludes REJECTED terminal)
+PIPELINE_ORDER: list[DealStatus] = [
+    DealStatus.LEAD,
+    DealStatus.QUALIFICATION,
+    DealStatus.QUALIFIED,
+    DealStatus.REQUIREMENTS,
+    DealStatus.REQUIREMENTS_COLLECTED,
+    DealStatus.PRICING,
+    DealStatus.PRICED,
+    DealStatus.APPROVAL_PENDING,
+    DealStatus.APPROVED,
+    DealStatus.ORDER_CREATED,
+    DealStatus.PRODUCTION,
+    DealStatus.DELIVERED,
+]
+
+
+def pipeline_progress_percentage(status: str | None) -> int:
+    """Compute workflow progress (0-100) from deal status."""
+    if not status:
+        return 0
+    if status == DealStatus.DELIVERED.value:
+        return 100
+    if status == DealStatus.REJECTED.value:
+        return 0
+    try:
+        current = DealStatus(status)
+    except ValueError:
+        return 0
+    if current not in PIPELINE_ORDER:
+        return 0
+    index = PIPELINE_ORDER.index(current)
+    return round((index + 1) / len(PIPELINE_ORDER) * 100)

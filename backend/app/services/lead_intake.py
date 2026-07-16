@@ -63,18 +63,6 @@ class LeadIntakeService:
             company_name=normalized.company_name,
         )
 
-        await self.workflow_trigger.trigger_lead_created(
-            workflow_id=result.workflow_id,
-            deal_id=result.deal_id,
-            source=normalized.source,
-            payload=self.notification_preparation.build_lead_notification_payload(
-                normalized,
-                result.deal_id,
-                result.workflow_id,
-                duplicate is not None,
-            ),
-        )
-
         await self.notification_preparation.notify_lead_created(normalized, response)
         return response
 

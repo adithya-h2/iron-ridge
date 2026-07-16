@@ -52,6 +52,8 @@ async def _execute_agent(
     orchestrator: AgentOrchestrator,
 ) -> AgentExecuteResponse:
     request.state.agent_name = agent_name
+    if input_data.deal_id:
+        request.state.deal_id = input_data.deal_id
     return await orchestrator.execute(agent_name, input_data)
 
 

@@ -51,7 +51,14 @@ from app.services.pricing import PricingService
 from app.services.duplicate_detection import DuplicateDetectionService
 from app.services.lead_intake import LeadIntakeService
 from app.services.lead_validator import LeadValidator
+from app.repositories.dashboard import DashboardRepository
+from app.repositories.workflow_execution_state import WorkflowExecutionStateRepository
+from app.services.dashboard import DashboardService
+from app.services.notification import NotificationService
 from app.services.notification_preparation import NotificationPreparationService
+from app.services.quotation_pdf import QuotationPdfService
+from app.services.workflow_retry import WorkflowRetryService
+from app.services.workflow_status import WorkflowStatusService
 from app.services.requirement import RequirementService
 from app.services.slack import SlackService
 from app.services.workflow import StubWorkflowService
@@ -139,10 +146,26 @@ def get_workflow_trigger_service(
     return WorkflowTriggerService(workflow_service)
 
 
+async def get_notification_service(
+    slack_service: SlackService = Depends(get_slack_service),
+) -> NotificationService:
+    return NotificationService(slack_service)
+
+
+async def get_notification_preparation_service(
+    notification_service: NotificationService = Depends(get_notification_service),
+) -> NotificationPreparationService:
+    return NotificationPreparationService(notification_service)
+
+
+def get_lead_validator() -> LeadValidator:
+    return LeadValidator()
+
+
 async def get_lead_intake_service(
     db: AsyncSession = Depends(get_db_session),
     audit_service: AuditService = Depends(get_audit_service),
-    slack_service: SlackService = Depends(get_slack_service),
+    notification_service: NotificationService = Depends(get_notification_service),
     workflow_trigger: WorkflowTriggerService = Depends(get_workflow_trigger_service),
 ) -> LeadIntakeService:
     return LeadIntakeService(
@@ -151,7 +174,7 @@ async def get_lead_intake_service(
         duplicate_detection=DuplicateDetectionService(CustomerRepository(db)),
         audit_service=audit_service,
         workflow_trigger=workflow_trigger,
-        notification_preparation=NotificationPreparationService(slack_service),
+        notification_preparation=NotificationPreparationService(notification_service),
     )
 
 
@@ -247,3 +270,30 @@ def require_roles(*roles: UserRole) -> Callable:
         return user
 
     return _checker
+
+
+async def get_workflow_status_service(
+    db: AsyncSession = Depends(get_db_session),
+) -> WorkflowStatusService:
+    retry_repo = WorkflowExecutionStateRepository(db) if settings.feature_retry_tracking else None
+    return WorkflowStatusService(
+        DealRepository(db),
+        AuditLogRepository(db),
+        retry_repo,
+    )
+
+
+async def get_workflow_retry_service(
+    db: AsyncSession = Depends(get_db_session),
+) -> WorkflowRetryService:
+    return WorkflowRetryService(WorkflowExecutionStateRepository(db))
+
+
+async def get_dashboard_service(
+    db: AsyncSession = Depends(get_db_session),
+) -> DashboardService:
+    return DashboardService(DashboardRepository(db))
+
+
+def get_quotation_pdf_service() -> QuotationPdfService:
+    return QuotationPdfService()
