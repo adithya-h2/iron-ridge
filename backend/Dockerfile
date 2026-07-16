@@ -16,7 +16,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Copy requirements and install into a separate directory
 COPY requirements.txt .
-RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt && \
+    pip install --no-cache-dir --prefix=/install "aiohttp==3.13.2" && \
+    PYTHONPATH=/install/lib/python3.12/site-packages \
+    python -c "import aiohttp; from slack_sdk.web.async_client import AsyncWebClient"
 
 
 # --- Stage 2: Production ---
@@ -36,6 +39,9 @@ COPY --from=builder /install /usr/local
 COPY app/ ./app/
 COPY migrations/ ./migrations/
 COPY alembic.ini .
+
+# Fail the image build if slack async dependencies are missing
+RUN python -c "import aiohttp; from slack_sdk.web.async_client import AsyncWebClient"
 
 # Non-root user for security
 RUN addgroup --system ironridge && adduser --system --group ironridge
