@@ -1,6 +1,7 @@
 # ===========================================================
 # Iron Ridge Intelligent Sales Workflow — Backend Dependencies
 # Python 3.12 | FastAPI | SQLAlchemy 2.x | Pydantic v2
+# Production runtime dependencies (Railway / Docker)
 # ===========================================================
 
 # --- Web Framework ---
@@ -25,8 +26,9 @@ python-jose[cryptography]==3.3.0   # JWT encode / decode
 bcrypt==4.2.1
 python-multipart==0.0.20           # Required for OAuth2 form parsing
 
-# --- HTTP Client (agents call external LLMs / n8n) ---
+# --- HTTP Client (agents, n8n, external APIs) ---
 httpx==0.28.1
+aiohttp==3.13.2                    # Required by slack-sdk AsyncWebClient
 
 # --- AI Providers ---
 openai==1.58.1
@@ -40,14 +42,9 @@ redis==5.2.1
 
 # --- Utilities ---
 python-dotenv==1.0.1
-tenacity==9.0.0          # Retry logic for LLM and external API calls
 reportlab==4.2.5         # Quotation PDF generation
 
-# --- Logging ---
-structlog==24.4.0        # Structured JSON logging
-
-# --- Testing ---
+# --- Testing (installed on Railway for CI parity; safe to omit in slim images) ---
 pytest==8.3.4
 pytest-asyncio==0.25.0
 pytest-cov==6.0.0
-httpx==0.28.1            # Also used as async test client

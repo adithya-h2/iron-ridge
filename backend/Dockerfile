@@ -41,12 +41,13 @@ COPY alembic.ini .
 RUN addgroup --system ironridge && adduser --system --group ironridge
 USER ironridge
 
-# Expose port
+# Railway and other hosts inject PORT at runtime (default 8000 for local Docker)
+ENV PORT=8000
 EXPOSE 8000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-    CMD python -c "import urllib.request; r=urllib.request.urlopen('http://localhost:8000/health', timeout=5); exit(0 if r.status==200 else 1)"
+    CMD python -c "import os, urllib.request; port=os.environ.get('PORT','8000'); r=urllib.request.urlopen(f'http://localhost:{port}/health', timeout=5); exit(0 if r.status==200 else 1)"
 
-# Run with Uvicorn
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
+# Run with Uvicorn — shell form so $PORT expands on Railway
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}

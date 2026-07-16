@@ -127,9 +127,9 @@ app = FastAPI(
         "Powers six AI agents (Marty, Lisa, Neil, Paul, Sally, Adam) and one human principal (Victor). "
         "All agents are orchestrated externally by n8n workflows."
     ),
-    docs_url="/docs" if not settings.is_production else None,
-    redoc_url="/redoc" if not settings.is_production else None,
-    openapi_url="/openapi.json" if not settings.is_production else None,
+    docs_url="/docs" if settings.enable_api_docs else None,
+    redoc_url="/redoc" if settings.enable_api_docs else None,
+    openapi_url="/openapi.json" if settings.enable_api_docs else None,
     lifespan=lifespan,
 )
 

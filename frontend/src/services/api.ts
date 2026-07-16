@@ -7,11 +7,11 @@ function resolveBaseUrl(): string {
   const url = process.env.NEXT_PUBLIC_API_URL;
   if (!url) {
     if (typeof window !== "undefined") {
-      throw new Error(
-        "NEXT_PUBLIC_API_URL is not configured. Set it in .env.local (e.g. http://localhost:8000)."
+      console.warn(
+        "Warning: NEXT_PUBLIC_API_URL is not configured. Set it in Vercel or .env.local. Falling back to http://localhost:8000 for local development."
       );
     }
-    return "";
+    return "http://localhost:8000";
   }
   return url.replace(/\/$/, "");
 }

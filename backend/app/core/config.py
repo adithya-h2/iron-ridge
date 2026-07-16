@@ -49,6 +49,7 @@ class Settings(BaseSettings):
     app_version: str = "1.0.0"
     debug: bool = False
     log_level: str = "INFO"
+    enable_api_docs: bool = True
 
     # -----------------------------------------------------------------------
     # Server
@@ -68,20 +69,25 @@ class Settings(BaseSettings):
     db_pool_recycle: int = 1800    # Recycle connections after 30 min (avoids stale)
     db_echo: bool = False          # Set True in dev to log all SQL queries
 
-    @field_validator("database_url")
+    @field_validator("database_url", mode="before")
     @classmethod
-    def validate_database_url(cls, v: str) -> str:
+    def normalize_database_url(cls, v: str) -> str:
         """
-        Ensure the URL uses the asyncpg driver.
+        Normalize common Railway/Supabase URL formats to asyncpg driver.
 
         SQLAlchemy's async engine requires postgresql+asyncpg://.
-        A plain postgresql:// URL will cause a 'This method is not available
-        in an async context' error at runtime.
         """
+        if not isinstance(v, str):
+            return v
+        if v.startswith("postgres://"):
+            v = "postgresql+asyncpg://" + v[len("postgres://") :]
+        elif v.startswith("postgresql://"):
+            v = "postgresql+asyncpg://" + v[len("postgresql://") :]
         if not v.startswith("postgresql+asyncpg://"):
             raise ValueError(
-                "DATABASE_URL must start with 'postgresql+asyncpg://'. "
-                "Standard 'postgresql://' is not compatible with async SQLAlchemy."
+                "DATABASE_URL must use postgresql+asyncpg:// (or postgres:// / postgresql:// "
+                "which are auto-converted). Standard sync drivers are not compatible "
+                "with async SQLAlchemy."
             )
         return v
 
