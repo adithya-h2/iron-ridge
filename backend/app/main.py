@@ -166,13 +166,6 @@ async def root():
         "docs_url": "/docs"
     }
 
-@app.get("/cors-debug")
-async def cors_debug():
-    return {
-        "allowed_origins": settings.allowed_origins_list,
-        "raw": settings.allowed_origins,
-    }
-
 app.include_router(health.router, tags=["System"])
 
 # ---------------------------------------------------------------------------
